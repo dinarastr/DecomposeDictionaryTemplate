@@ -42,5 +42,14 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
+    
+    // Add Decompose dependencies for Android
+    implementation(libs.decompose)
+    implementation(libs.decompose.extensions.android)
+    implementation(libs.decompose.extensions.compose)
+    
+    // Add essenty lifecycle for manual lifecycle management
+    implementation(libs.essenty.lifecycle)
+    
     debugImplementation(libs.compose.ui.tooling)
 }
