@@ -32,6 +32,11 @@ interface TopicsComponent {
         // Topic details screen
         data class Details(val component: TopicDetailsComponent) : Child()
     }
+    
+    // Factory interface for creating TopicsComponent instances
+    fun interface Factory {
+        operator fun invoke(componentContext: ComponentContext): TopicsComponent
+    }
 }
 
 /**
@@ -39,7 +44,7 @@ interface TopicsComponent {
  */
 class DefaultTopicsComponent(
     componentContext: ComponentContext,
-    private val storeFactory: StoreFactory = DefaultStoreFactory(),
+    private val storeFactory: StoreFactory,
 ) : TopicsComponent, ComponentContext by componentContext {
     
     // Navigation controller for the topics stack
@@ -101,6 +106,17 @@ class DefaultTopicsListComponent(
     private val onTopicSelected: (String) -> Unit
 ) : TopicsListComponent, ComponentContext by componentContext {
     // Implement topics list functionality using MVIKotlin
+}
+
+// Add factory implementation for TopicsComponent
+class TopicsComponentFactory(
+    private val storeFactory: StoreFactory,
+) : TopicsComponent.Factory {
+    override fun invoke(componentContext: ComponentContext): TopicsComponent =
+        DefaultTopicsComponent(
+            componentContext = componentContext,
+            storeFactory = storeFactory
+        )
 }
 
 /**

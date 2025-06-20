@@ -54,6 +54,11 @@ interface DictionaryComponent {
         val error: String? = null,
         val isInitialized: Boolean = false
     )
+    
+    // Factory interface for creating DictionaryComponent instances
+    fun interface Factory {
+        operator fun invoke(componentContext: ComponentContext): DictionaryComponent
+    }
 }
 
 /**
@@ -61,11 +66,11 @@ interface DictionaryComponent {
  */
 class DefaultDictionaryComponent(
     componentContext: ComponentContext,
-    private val storeFactory: StoreFactory = DefaultStoreFactory(),
+    private val storeFactory: DictionaryStoreFactory,
 ) : DictionaryComponent, ComponentContext by componentContext {
 
     // Create the store
-    private val store = DictionaryStoreFactory(storeFactory).create()
+    private val store = storeFactory.create()
 
     // Map the store state to the component state
     override val state: Value<DictionaryComponent.State> = store.asValue().map { storeState ->
@@ -133,5 +138,16 @@ class DefaultDictionaryComponent(
                 }
             }
         }
+    }
+    
+    // Factory implementation
+    class Factory(
+        private val storeFactory: DictionaryStoreFactory,
+    ) : DictionaryComponent.Factory {
+        override fun invoke(componentContext: ComponentContext): DictionaryComponent =
+            DefaultDictionaryComponent(
+                componentContext = componentContext,
+                storeFactory = storeFactory
+            )
     }
 }

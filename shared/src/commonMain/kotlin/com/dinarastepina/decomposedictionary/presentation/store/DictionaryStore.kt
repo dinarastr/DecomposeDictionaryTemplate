@@ -6,6 +6,10 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepository
+import com.dinarastepina.decomposedictionary.domain.model.Word as DomainWord
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 /**
@@ -67,7 +71,10 @@ interface DictionaryStore : Store<DictionaryStore.Intent, DictionaryStore.State,
 /**
  * Factory for creating the DictionaryStore.
  */
-class DictionaryStoreFactory(private val storeFactory: StoreFactory) {
+class DictionaryStoreFactory(
+    private val storeFactory: StoreFactory,
+    private val repository: DictionaryRepository
+) {
     
     /**
      * Creates a new instance of the DictionaryStore.
@@ -187,9 +194,9 @@ class DictionaryStoreFactory(private val storeFactory: StoreFactory) {
             scope.launch {
                 try {
                     dispatch(Message.LoadingStarted)
-                    // Simulate loading popular words
-                    val popularWords = fetchPopularWords()
-                    dispatch(Message.PopularWordsLoaded(popularWords))
+                    val domainWords = repository.getPopularWords()
+                    val storeWords = domainWords.map { it.toStoreWord() }
+                    dispatch(Message.PopularWordsLoaded(storeWords))
                 } catch (e: Exception) {
                     dispatch(Message.ErrorOccurred("Failed to load popular words: ${e.message}"))
                 }
@@ -202,11 +209,11 @@ class DictionaryStoreFactory(private val storeFactory: StoreFactory) {
                     // Refresh both current search and popular words
                     val currentQuery = state().query
                     if (currentQuery.isNotBlank()) {
-                        val words = fetchWords(currentQuery)
-                        dispatch(Message.WordsLoaded(words))
+                        //val words = fetchWords(currentQuery)
+                        dispatch(Message.WordsLoaded(emptyList()))
                     }
-                    val popularWords = fetchPopularWords()
-                    dispatch(Message.PopularWordsLoaded(popularWords))
+                    //val popularWords = fetchPopularWords()
+                    dispatch(Message.PopularWordsLoaded(emptyList()))
                 } catch (e: Exception) {
                     dispatch(Message.ErrorOccurred("Failed to refresh data: ${e.message}"))
                 }
@@ -222,8 +229,12 @@ class DictionaryStoreFactory(private val storeFactory: StoreFactory) {
                     
                     // Check if query is still current
                     if (state().query == query) {
-                        val words = fetchWords(query)
-                        dispatch(Message.WordsLoaded(words))
+                        repository.searchWords(query)
+                            .onEach { domainWords ->
+                                val storeWords = domainWords.map { it.toStoreWord() }
+                                dispatch(Message.WordsLoaded(storeWords))
+                            }
+                            .launchIn(scope)
                     }
                 } catch (e: Exception) {
                     dispatch(Message.ErrorOccurred(e.message ?: "Search failed"))
@@ -231,48 +242,13 @@ class DictionaryStoreFactory(private val storeFactory: StoreFactory) {
             }
         }
         
-        // Simulate fetching words from an API
-        private suspend fun fetchWords(query: String): List<DictionaryStore.Word> {
-            // Simulate network delay
-            kotlinx.coroutines.delay(500)
-            return listOf(
-                DictionaryStore.Word(
-                    id = "1",
-                    text = "${query}1",
-                    definition = "Definition for ${query}1",
-                    examples = listOf("Example 1 for $query", "Example 2 for $query")
-                ),
-                DictionaryStore.Word(
-                    id = "2",
-                    text = "${query}2",
-                    definition = "Definition for ${query}2",
-                    examples = listOf("Example 3 for $query", "Example 4 for $query")
-                )
-            )
-        }
-        
-        // Simulate fetching popular words
-        private suspend fun fetchPopularWords(): List<DictionaryStore.Word> {
-            kotlinx.coroutines.delay(300)
-            return listOf(
-                DictionaryStore.Word(
-                    id = "pop1",
-                    text = "hello",
-                    definition = "A greeting or expression of goodwill",
-                    examples = listOf("Hello, how are you?", "She said hello to everyone.")
-                ),
-                DictionaryStore.Word(
-                    id = "pop2",
-                    text = "world",
-                    definition = "The earth and all its inhabitants",
-                    examples = listOf("The world is round.", "He traveled around the world.")
-                ),
-                DictionaryStore.Word(
-                    id = "pop3",
-                    text = "dictionary",
-                    definition = "A reference book containing words and their meanings",
-                    examples = listOf("Look it up in the dictionary.", "This dictionary has 50,000 words.")
-                )
+        // Extension function to convert domain word to store word
+        private fun DomainWord.toStoreWord(): DictionaryStore.Word {
+            return DictionaryStore.Word(
+                id = this.id,
+                text = this.text,
+                definition = this.definition,
+                examples = this.examples
             )
         }
     }

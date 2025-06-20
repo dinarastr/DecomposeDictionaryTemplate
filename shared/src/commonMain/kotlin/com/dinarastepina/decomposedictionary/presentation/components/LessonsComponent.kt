@@ -38,6 +38,11 @@ interface LessonsComponent {
         // Lesson section screen
         data class Section(val component: LessonSectionComponent) : Child()
     }
+    
+    // Factory interface for creating LessonsComponent instances
+    fun interface Factory {
+        operator fun invoke(componentContext: ComponentContext): LessonsComponent
+    }
 }
 
 /**
@@ -45,7 +50,7 @@ interface LessonsComponent {
  */
 class DefaultLessonsComponent(
     componentContext: ComponentContext,
-    private val storeFactory: StoreFactory = DefaultStoreFactory(),
+    private val storeFactory: StoreFactory,
 ) : LessonsComponent, ComponentContext by componentContext {
     
     // Navigation controller for the lessons stack
@@ -159,4 +164,15 @@ class DefaultLessonSectionComponent(
     private val sectionId: String
 ) : LessonSectionComponent, ComponentContext by componentContext {
     // Implement lesson section functionality using MVIKotlin
+}
+
+// Add factory implementation for LessonsComponent
+class LessonsComponentFactory(
+    private val storeFactory: StoreFactory,
+) : LessonsComponent.Factory {
+    override fun invoke(componentContext: ComponentContext): LessonsComponent =
+        DefaultLessonsComponent(
+            componentContext = componentContext,
+            storeFactory = storeFactory
+        )
 }

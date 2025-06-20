@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -48,11 +49,35 @@ kotlin {
             implementation(libs.mvikotlin.extensions.coroutines)
             implementation(libs.essenty.lifecycle.coroutines)
 
+            // Koin dependencies
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
+            // Room database
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
+
+            // Coroutines and datetime
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
+        }
+        
+        androidMain.dependencies {
+            implementation(libs.koin.android)
+        }
+        
+        iosMain.dependencies {
+            // iOS specific dependencies if needed
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", libs.room.compiler)
 }
 
 android {

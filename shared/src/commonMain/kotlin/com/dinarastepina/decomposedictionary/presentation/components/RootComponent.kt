@@ -22,6 +22,11 @@ interface RootComponent {
         // Main screen with bottom navigation
         data class Main(val component: MainComponent) : Child()
     }
+    
+    // Factory interface for creating RootComponent instances
+    fun interface Factory {
+        operator fun invoke(componentContext: ComponentContext): RootComponent
+    }
 }
 
 /**
@@ -29,6 +34,7 @@ interface RootComponent {
  */
 class DefaultRootComponent(
     componentContext: ComponentContext,
+    private val mainComponentFactory: MainComponent.Factory,
 ) : RootComponent, ComponentContext by componentContext {
     
     // Navigation controller for the root stack
@@ -48,7 +54,18 @@ class DefaultRootComponent(
     private fun createChild(config: RootConfig, context: ComponentContext): RootComponent.Child =
         when (config) {
             is RootConfig.Main -> RootComponent.Child.Main(
-                component = DefaultMainComponent(context)
+                component = mainComponentFactory(context)
             )
         }
+    
+    // Factory implementation
+    class Factory(
+        private val mainComponentFactory: MainComponent.Factory,
+    ) : RootComponent.Factory {
+        override fun invoke(componentContext: ComponentContext): RootComponent =
+            DefaultRootComponent(
+                componentContext = componentContext,
+                mainComponentFactory = mainComponentFactory
+            )
+    }
 }

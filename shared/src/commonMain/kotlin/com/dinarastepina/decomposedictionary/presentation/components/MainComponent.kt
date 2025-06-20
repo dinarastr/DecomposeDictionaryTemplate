@@ -28,6 +28,11 @@ interface MainComponent {
         data class Topics(val component: TopicsComponent) : Child()
         data class Lessons(val component: LessonsComponent) : Child()
     }
+    
+    // Factory interface for creating MainComponent instances
+    fun interface Factory {
+        operator fun invoke(componentContext: ComponentContext): MainComponent
+    }
 }
 
 /**
@@ -35,6 +40,9 @@ interface MainComponent {
  */
 class DefaultMainComponent(
     componentContext: ComponentContext,
+    private val dictionaryComponentFactory: DictionaryComponent.Factory,
+    private val topicsComponentFactory: TopicsComponent.Factory,
+    private val lessonsComponentFactory: LessonsComponent.Factory,
 ) : MainComponent, ComponentContext by componentContext {
     
     // Navigation controller for slot-based tab selection
@@ -64,13 +72,28 @@ class DefaultMainComponent(
     private fun createChild(config: TabConfig, context: ComponentContext): MainComponent.Child =
         when (config) {
             is TabConfig.Dictionary -> MainComponent.Child.Dictionary(
-                component = DefaultDictionaryComponent(context)
+                component = dictionaryComponentFactory(context)
             )
             is TabConfig.Topics -> MainComponent.Child.Topics(
-                component = DefaultTopicsComponent(context)
+                component = topicsComponentFactory(context)
             )
             is TabConfig.Lessons -> MainComponent.Child.Lessons(
-                component = DefaultLessonsComponent(context)
+                component = lessonsComponentFactory(context)
             )
         }
+    
+    // Factory implementation
+    class Factory(
+        private val dictionaryComponentFactory: DictionaryComponent.Factory,
+        private val topicsComponentFactory: TopicsComponent.Factory,
+        private val lessonsComponentFactory: LessonsComponent.Factory,
+    ) : MainComponent.Factory {
+        override fun invoke(componentContext: ComponentContext): MainComponent =
+            DefaultMainComponent(
+                componentContext = componentContext,
+                dictionaryComponentFactory = dictionaryComponentFactory,
+                topicsComponentFactory = topicsComponentFactory,
+                lessonsComponentFactory = lessonsComponentFactory
+            )
+    }
 }

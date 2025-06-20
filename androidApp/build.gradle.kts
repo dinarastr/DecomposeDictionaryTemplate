@@ -51,5 +51,9 @@ dependencies {
     // Add essenty lifecycle for manual lifecycle management
     implementation(libs.essenty.lifecycle)
     
+    // Add Koin for Android
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+    
     debugImplementation(libs.compose.ui.tooling)
 }
