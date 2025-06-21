@@ -219,7 +219,6 @@ object DefinitionListSerializer : KSerializer<List<Definition>> {
                     listOf(Definition(com = null, text = jsonElement.content))
                 } else emptyList()
             }
-            else -> emptyList()
         }
     }
 }

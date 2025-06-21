@@ -1,6 +1,6 @@
 package com.dinarastepina.decomposedictionary.audio
 
-import com.dinarastepina.decomposedictionary.data.toNSData
+import com.dinarastepina.decomposedictionary.data.local.toNSData
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.runBlocking
 import platform.AVFAudio.AVAudioPlayer

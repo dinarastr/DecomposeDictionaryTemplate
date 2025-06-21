@@ -14,7 +14,7 @@ import kotlinx.coroutines.IO
 @Database(
     entities = [WordEntity::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(WordTypeConverter::class)
 @ConstructedBy(AppDatabaseConstructor::class)

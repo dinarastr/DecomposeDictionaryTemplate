@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.compose.compiler)
-    //alias(libs.plugins.room)
+    alias(libs.plugins.room)
     alias(libs.plugins.ksp)
 }
 
@@ -87,6 +87,10 @@ dependencies {
     add("kspIosX64", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
     add("kspIosSimulatorArm64", libs.room.compiler)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
