@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.room.Room
 import androidx.sqlite.SQLiteDriver
 import androidx.sqlite.driver.AndroidSQLiteDriver
-import com.dinarastepina.decomposedictionary.data.local.DictionaryDataBase
+import com.dinarastepina.decomposedictionary.data.local.DictionaryDatabase
 
 actual class DatabaseDriver(private val context: Context) {
     actual fun createDriver(): SQLiteDriver {
         val db = Room.databaseBuilder(
             context,
-            DictionaryDataBase::class.java,
+            DictionaryDatabase::class.java,
             "ulchi.db"
         )
             .fallbackToDestructiveMigration(true)

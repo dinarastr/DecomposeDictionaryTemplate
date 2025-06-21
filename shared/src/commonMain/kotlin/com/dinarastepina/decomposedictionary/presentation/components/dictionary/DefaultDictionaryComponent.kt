@@ -1,10 +1,14 @@
 package com.dinarastepina.decomposedictionary.presentation.components.dictionary
 
+import app.cash.paging.PagingData
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepository
+import com.dinarastepina.decomposedictionary.domain.model.Word
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStore
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStoreFactory
 import kotlinx.coroutines.CoroutineScope
@@ -22,10 +26,10 @@ import com.arkivanov.decompose.Cancellation
  */
 class DefaultDictionaryComponent(
     componentContext: ComponentContext,
-    private val storeFactory: DictionaryStoreFactory,
+    private val storeFactory: DictionaryStoreFactory
 ) : DictionaryComponent, ComponentContext by componentContext {
 
-    // Create the store
+    // Create the store with paging support
     private val store = storeFactory.create()
 
     // Map the store state to the component state
@@ -33,6 +37,7 @@ class DefaultDictionaryComponent(
         DictionaryComponent.State(
             query = storeState.query,
             words = storeState.words,
+            popularWords = storeState.popularWords,
             isLoading = storeState.isLoading,
             error = storeState.error,
             isInitialized = storeState.isInitialized
@@ -40,7 +45,7 @@ class DefaultDictionaryComponent(
     }
 
     // Map the store labels to word selections
-    override val wordSelections: Flow<DictionaryStore.Word> = store.labels.mapNotNull { label ->
+    override val wordSelections: Flow<Word> = store.labels.mapNotNull { label ->
         when (label) {
             is DictionaryStore.Label.WordSelected -> label.word
             else -> null
@@ -48,12 +53,15 @@ class DefaultDictionaryComponent(
     }
     
     // Map the store labels to navigation events
-    override val navigationEvents: Flow<DictionaryStore.Word> = store.labels.mapNotNull { label ->
+    override val navigationEvents: Flow<Word> = store.labels.mapNotNull { label ->
         when (label) {
             is DictionaryStore.Label.NavigateToWordDetail -> label.word
             else -> null
         }
     }
+
+    // Expose the paging flow from the store
+    override val wordsPagingFlow: Flow<PagingData<Word>> = store.wordsPagingFlow
 
     // Method to search for a word
     override fun search(query: String) {
@@ -87,7 +95,7 @@ class DefaultDictionaryComponent(
     
     // Factory implementation
     class Factory(
-        private val storeFactory: DictionaryStoreFactory,
+        private val storeFactory: DictionaryStoreFactory
     ) : DictionaryComponent.Factory {
         override fun invoke(componentContext: ComponentContext): DictionaryComponent =
             DefaultDictionaryComponent(

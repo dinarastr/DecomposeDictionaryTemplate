@@ -4,30 +4,34 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.TypeConverters
+import com.dinarastepina.decomposedictionary.data.local.converter.WordTypeConverter
 import com.dinarastepina.decomposedictionary.data.local.dao.RussianDao
 import com.dinarastepina.decomposedictionary.data.local.entity.WordEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
-@Database(entities = [
-    WordEntity::class,
- ], version = 4, exportSchema = true)
+@Database(
+    entities = [WordEntity::class],
+    version = 1,
+    exportSchema = false
+)
+@TypeConverters(WordTypeConverter::class)
 @ConstructedBy(AppDatabaseConstructor::class)
-abstract class DictionaryDataBase: RoomDatabase() {
+abstract class DictionaryDatabase : RoomDatabase() {
     abstract fun getRussianDao(): RussianDao
 }
 
-@Suppress("NO_ACTUAL_FOR_EXPECT")
-expect object AppDatabaseConstructor : RoomDatabaseConstructor<DictionaryDataBase> {
-    override fun initialize(): DictionaryDataBase
+expect object AppDatabaseConstructor : RoomDatabaseConstructor<DictionaryDatabase> {
+    override fun initialize(): DictionaryDatabase
 }
 
 fun getRoomDatabase(
-    builder: RoomDatabase.Builder<DictionaryDataBase>
-): DictionaryDataBase {
+    builder: RoomDatabase.Builder<DictionaryDatabase>
+): DictionaryDatabase {
     return builder
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()
 }
 
-fun getRussianDao(appDatabase: DictionaryDataBase) = appDatabase.getRussianDao()
+fun getRussianDao(appDatabase: DictionaryDatabase) = appDatabase.getRussianDao()

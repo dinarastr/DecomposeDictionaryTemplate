@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.room)
+    //alias(libs.plugins.room)
     alias(libs.plugins.ksp)
 }
 
@@ -58,6 +58,13 @@ kotlin {
             // Room database
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+
+            // Paging dependencies
+            implementation(libs.paging.common)
+            implementation(libs.paging.compose.common)
+
+            // Kotlinx Serialization
+            implementation(libs.kotlinx.serialization.json)
         }
         
         androidMain.dependencies {
@@ -76,7 +83,10 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
 }
 
 android {
@@ -91,6 +101,4 @@ android {
     }
 }
 
-room {
-    schemaDirectory("$projectDir/schemas")
-}
+

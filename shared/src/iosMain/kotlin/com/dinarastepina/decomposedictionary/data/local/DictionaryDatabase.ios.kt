@@ -15,13 +15,14 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 import platform.Foundation.dataWithBytes
 import kotlin.toULong
+import platform.Foundation.NSURL
 
 
 private const val DATABASE_NAME: String = "nanay_dictionary.db"
 private const val PREPOPULATED_DATABASE_FILE = "files/nanay_to_russian"
 
 @OptIn(ExperimentalForeignApi::class)
- fun getDatabaseBuilder(): RoomDatabase.Builder<DictionaryDataBase> {
+fun getDatabaseBuilder(): RoomDatabase.Builder<DictionaryDatabase> {
     val fileManager = NSFileManager.defaultManager
     val documentsDirectory = fileManager.URLForDirectory(
         directory = NSDocumentDirectory,
@@ -30,47 +31,22 @@ private const val PREPOPULATED_DATABASE_FILE = "files/nanay_to_russian"
         create = true,
         error = null,
     )
-    val dbFilePath = documentsDirectory?.path + "/$DATABASE_NAME"
-    val dbFileExists = fileManager.fileExistsAtPath(dbFilePath)
-
-    if (!dbFileExists) {
-        val dbBytes = runBlocking {
-            try {
-                Res.readBytes(PREPOPULATED_DATABASE_FILE)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
-        if (dbBytes != null) {
-            val nsData = dbBytes.toNSData()
-            if (nsData != null) {
-                try {
-                    val success = fileManager.createFileAtPath(
-                        dbFilePath,
-                        nsData,
-                        null
-                    )
-                    if (success) {
-                        println("Successfully copied prepopulated database to: $dbFilePath")
-                    } else {
-                        println("Failed to copy prepopulated database to: $dbFilePath")
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    println("Error copying prepopulated database: ${e.message}")
-                }
-            } else {
-                println("Error converting ByteArray to NSData.")
-            }
-        } else {
-            println("Error reading prepopulated database bytes from shared resources.")
-        }
-    }
-    return Room.databaseBuilder<DictionaryDataBase>(
+    val dbFilePath = documentsDirectory?.path + "/ulchi.db"
+    return Room.databaseBuilder<DictionaryDatabase>(
         name = dbFilePath
-    ).setDriver(DatabaseDriver().createDriver())
-        .fallbackToDestructiveMigration(true)
+    )
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun documentDirectory(): String {
+    val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
+        directory = NSDocumentDirectory,
+        inDomain = NSUserDomainMask,
+        appropriateForURL = null,
+        create = false,
+        error = null,
+    )
+    return requireNotNull(documentDirectory?.path)
 }
 
 @OptIn(ExperimentalForeignApi::class)
@@ -82,3 +58,4 @@ fun ByteArray.toNSData(): NSData? {
         }
     }
 }
+

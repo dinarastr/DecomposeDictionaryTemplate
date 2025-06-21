@@ -10,13 +10,12 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import kotlin.io.writeBytes
-
 private const val PREPOPULATED_DATABASE_FILE = "files/ulchi.db"
 private const val CURRENT_SCHEMA_VERSION = 3 // Update this when you change the schema
 
-fun getDatabaseBuilder(ctx: Context): RoomDatabase.Builder<DictionaryDataBase> {
+fun getDatabaseBuilder(ctx: Context): RoomDatabase.Builder<DictionaryDatabase> {
     val appContext = ctx.applicationContext
-    return Room.databaseBuilder<DictionaryDataBase>(
+    return Room.databaseBuilder<DictionaryDatabase>(
         context = appContext,
         name = "ulchi.db"
     ).setDriver(DatabaseDriver(appContext).createDriver())
@@ -42,3 +41,4 @@ private suspend fun File.copyPrepopulatedDatabase() {
         println("An unexpected error occurred: ${e.message}")
     }
 }
+

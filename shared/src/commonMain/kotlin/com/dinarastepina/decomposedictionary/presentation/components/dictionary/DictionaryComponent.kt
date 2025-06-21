@@ -1,8 +1,9 @@
 package com.dinarastepina.decomposedictionary.presentation.components.dictionary
 
+import app.cash.paging.PagingData
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
-import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStore
+import com.dinarastepina.decomposedictionary.domain.model.Word
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,10 +14,13 @@ interface DictionaryComponent {
     val state: Value<State>
 
     // Expose word selection events as a Flow
-    val wordSelections: Flow<DictionaryStore.Word>
+    val wordSelections: Flow<Word>
     
     // Expose navigation events as a Flow
-    val navigationEvents: Flow<DictionaryStore.Word>
+    val navigationEvents: Flow<Word>
+
+    // Expose paging flow for infinite scrolling
+    val wordsPagingFlow: Flow<PagingData<Word>>
 
     // Method to search for a word
     fun search(query: String)
@@ -29,8 +33,8 @@ interface DictionaryComponent {
      */
     data class State(
         val query: String = "",
-        val words: List<DictionaryStore.Word> = emptyList(),
-        val popularWords: List<DictionaryStore.Word> = emptyList(),
+        val words: List<Word> = emptyList(),
+        val popularWords: List<Word> = emptyList(),
         val isLoading: Boolean = false,
         val error: String? = null,
         val isInitialized: Boolean = false

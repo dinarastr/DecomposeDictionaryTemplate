@@ -1,21 +1,36 @@
 package com.dinarastepina.decomposedictionary.presentation.store
 
+import app.cash.paging.Pager
+import app.cash.paging.PagingConfig
+import app.cash.paging.PagingData
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import com.dinarastepina.decomposedictionary.data.paging.WordPagingSource
 import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepository
 import com.dinarastepina.decomposedictionary.domain.model.Word
-import com.dinarastepina.decomposedictionary.domain.model.Word as DomainWord
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 /**
- * Store interface for the Dictionary component.
+ * Store interface for the Dictionary component with paging support.
  */
 interface DictionaryStore : Store<DictionaryStore.Intent, DictionaryStore.State, DictionaryStore.Label> {
+    
+    /**
+     * Paging data flow for infinite scrolling.
+     */
+    val wordsPagingFlow: Flow<PagingData<Word>>
     
     /**
      * Intents that can be sent to the store.
@@ -56,16 +71,6 @@ interface DictionaryStore : Store<DictionaryStore.Intent, DictionaryStore.State,
         // Label for navigation events
         data class NavigateToWordDetail(val word: Word) : Label()
     }
-    
-    /**
-     * Data class representing a word in the dictionary.
-     */
-    data class Word(
-        val id: String,
-        val text: String,
-        val definition: String,
-        val examples: List<String> = emptyList()
-    )
 }
 
 /**
@@ -79,14 +84,47 @@ class DictionaryStoreFactory(
     /**
      * Creates a new instance of the DictionaryStore.
      */
-    fun create(): DictionaryStore =
-        object : DictionaryStore, Store<DictionaryStore.Intent, DictionaryStore.State, DictionaryStore.Label> by storeFactory.create(
+    fun create(): DictionaryStore {
+        // Create a scope for paging operations
+        val pagingScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        
+        // Create the store
+        val store = storeFactory.create(
             name = "DictionaryStore",
             initialState = DictionaryStore.State(),
             bootstrapper = BootstrapperImpl(),
             executorFactory = { ExecutorImpl() },
             reducer = ReducerImpl
-        ) {}
+        )
+        
+        return object : DictionaryStore, Store<DictionaryStore.Intent, DictionaryStore.State, DictionaryStore.Label> by store {
+            // Paging implementation
+            private val queryFlow = MutableStateFlow("")
+            
+            override val wordsPagingFlow: Flow<PagingData<Word>> = queryFlow.flatMapLatest { query ->
+                Pager(
+                    config = PagingConfig(
+                        pageSize = 20,
+                        enablePlaceholders = false,
+                        prefetchDistance = 5
+                    ),
+                    pagingSourceFactory = {
+                        WordPagingSource(
+                            repository = repository,
+                            searchQuery = query
+                        )
+                    }
+                ).flow
+            }
+            
+            init {
+                // Update query flow when state changes
+                store.stateFlow(pagingScope).onEach { storeState ->
+                    queryFlow.value = storeState.query
+                }.launchIn(pagingScope)
+            }
+        }
+    }
     
     /**
      * Actions that can occur within the store - these are internal events
@@ -110,8 +148,8 @@ class DictionaryStoreFactory(
      * Messages that can be sent to the reducer.
      */
     private sealed class Message {
-        data class WordsLoaded(val words: List<DictionaryStore.Word>) : Message()
-        data class PopularWordsLoaded(val words: List<DictionaryStore.Word>) : Message()
+        data class WordsLoaded(val words: List<Word>) : Message()
+        data class PopularWordsLoaded(val words: List<Word>) : Message()
         data class QueryChanged(val query: String) : Message()
         data class ErrorOccurred(val error: String) : Message()
         data object LoadingStarted : Message()
@@ -168,7 +206,7 @@ class DictionaryStoreFactory(
             executeAction(Action.PerformDebouncedSearch(query))
         }
         
-        private fun selectWord(word: DictionaryStore.Word) {
+        private fun selectWord(word: Word) {
             // Publish label for navigation
             publish(DictionaryStore.Label.WordSelected(word))
             publish(DictionaryStore.Label.NavigateToWordDetail(word))
@@ -194,10 +232,12 @@ class DictionaryStoreFactory(
             scope.launch {
                 try {
                     dispatch(Message.LoadingStarted)
-                    val domainWords = emptyList<Word>()
-                        //repository.getPopularWords()
-                    val storeWords = domainWords.map { it.toStoreWord() }
-                    dispatch(Message.PopularWordsLoaded(storeWords))
+                    // Get first 20 words as popular words
+                    repository.getAllWords(pageSize = 20, offset = 0)
+                        .onEach { domainWords ->
+                            dispatch(Message.PopularWordsLoaded(domainWords))
+                        }
+                        .launchIn(scope)
                 } catch (e: Exception) {
                     dispatch(Message.ErrorOccurred("Failed to load popular words: ${e.message}"))
                 }
@@ -210,11 +250,14 @@ class DictionaryStoreFactory(
                     // Refresh both current search and popular words
                     val currentQuery = state().query
                     if (currentQuery.isNotBlank()) {
-                        //val words = fetchWords(currentQuery)
-                        dispatch(Message.WordsLoaded(emptyList()))
+                        repository.searchWords(currentQuery, pageSize = 20, offset = 0)
+                            .onEach { domainWords ->
+                                dispatch(Message.WordsLoaded(domainWords))
+                            }
+                            .launchIn(scope)
                     }
-                    //val popularWords = fetchPopularWords()
-                    dispatch(Message.PopularWordsLoaded(emptyList()))
+                    // Refresh popular words
+                    executeAction(Action.LoadPopularWords)
                 } catch (e: Exception) {
                     dispatch(Message.ErrorOccurred("Failed to refresh data: ${e.message}"))
                 }
@@ -230,10 +273,9 @@ class DictionaryStoreFactory(
                     
                     // Check if query is still current
                     if (state().query == query) {
-                        repository.searchWords(query)
+                        repository.searchWords(query, pageSize = 20, offset = 0)
                             .onEach { domainWords ->
-                                val storeWords = domainWords.map { it.toStoreWord() }
-                                dispatch(Message.WordsLoaded(storeWords))
+                                dispatch(Message.WordsLoaded(domainWords))
                             }
                             .launchIn(scope)
                     }
@@ -241,16 +283,6 @@ class DictionaryStoreFactory(
                     dispatch(Message.ErrorOccurred(e.message ?: "Search failed"))
                 }
             }
-        }
-        
-        // Extension function to convert domain word to store word
-        private fun DomainWord.toStoreWord(): DictionaryStore.Word {
-            return DictionaryStore.Word(
-                id = this.id,
-                text = this.text,
-                definition = this.definition,
-                examples = this.examples
-            )
         }
     }
     
