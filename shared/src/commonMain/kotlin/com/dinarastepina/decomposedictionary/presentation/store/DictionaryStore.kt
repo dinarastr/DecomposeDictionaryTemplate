@@ -1,12 +1,12 @@
 package com.dinarastepina.decomposedictionary.presentation.store
 
-import com.arkivanov.mvikotlin.core.store.Bootstrapper
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepository
+import com.dinarastepina.decomposedictionary.domain.model.Word
 import com.dinarastepina.decomposedictionary.domain.model.Word as DomainWord
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -194,7 +194,8 @@ class DictionaryStoreFactory(
             scope.launch {
                 try {
                     dispatch(Message.LoadingStarted)
-                    val domainWords = repository.getPopularWords()
+                    val domainWords = emptyList<Word>()
+                        //repository.getPopularWords()
                     val storeWords = domainWords.map { it.toStoreWord() }
                     dispatch(Message.PopularWordsLoaded(storeWords))
                 } catch (e: Exception) {

@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.room)
     alias(libs.plugins.ksp)
 }
 
@@ -57,14 +58,12 @@ kotlin {
             // Room database
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
-
-            // Coroutines and datetime
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.datetime)
         }
         
         androidMain.dependencies {
             implementation(libs.koin.android)
+            implementation(libs.room.runtime)
+            implementation(libs.room.ktx)
         }
         
         iosMain.dependencies {
@@ -90,4 +89,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }

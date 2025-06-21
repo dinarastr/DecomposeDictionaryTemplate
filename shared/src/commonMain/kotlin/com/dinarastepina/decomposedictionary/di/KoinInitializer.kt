@@ -7,5 +7,9 @@ val koin by lazy { initKoin().koin }
 
 fun initKoin(appDeclaration: KoinAppDeclaration? = null) = startKoin {
     appDeclaration?.invoke(this)
-    modules(presentationModule, dataModule)
+    modules(
+        presentationModule,
+        dataModule,
+        audioModule,
+        platformModule())
 }
