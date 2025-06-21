@@ -1,65 +1,21 @@
-package com.dinarastepina.decomposedictionary.presentation.components
+package com.dinarastepina.decomposedictionary.presentation.components.dictionary
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.mapNotNull
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStore
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStoreFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-
-/**
- * Dictionary component that displays the dictionary functionality.
- */
-interface DictionaryComponent {
-    // Expose the state as a Value (observable)
-    val state: Value<State>
-
-    // Expose word selection events as a Flow
-    val wordSelections: Flow<DictionaryStore.Word>
-    
-    // Expose navigation events as a Flow
-    val navigationEvents: Flow<DictionaryStore.Word>
-
-    // Method to search for a word
-    fun search(query: String)
-
-    // Method to clear the search
-    fun clearSearch()
-    
-    // Method to select a word
-    fun selectWord(word: DictionaryStore.Word)
-    
-    // Method to load popular words
-    fun loadPopularWords()
-
-    /**
-     * State of the dictionary component.
-     */
-    data class State(
-        val query: String = "",
-        val words: List<DictionaryStore.Word> = emptyList(),
-        val popularWords: List<DictionaryStore.Word> = emptyList(),
-        val isLoading: Boolean = false,
-        val error: String? = null,
-        val isInitialized: Boolean = false
-    )
-    
-    // Factory interface for creating DictionaryComponent instances
-    fun interface Factory {
-        operator fun invoke(componentContext: ComponentContext): DictionaryComponent
-    }
-}
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.decompose.Cancellation
 
 /**
  * Default implementation of the DictionaryComponent interface.
@@ -77,7 +33,6 @@ class DefaultDictionaryComponent(
         DictionaryComponent.State(
             query = storeState.query,
             words = storeState.words,
-            popularWords = storeState.popularWords,
             isLoading = storeState.isLoading,
             error = storeState.error,
             isInitialized = storeState.isInitialized
@@ -109,30 +64,20 @@ class DefaultDictionaryComponent(
     override fun clearSearch() {
         store.accept(DictionaryStore.Intent.ClearSearch)
     }
-    
-    // Method to select a word
-    override fun selectWord(word: DictionaryStore.Word) {
-        store.accept(DictionaryStore.Intent.SelectWord(word))
-    }
-    
-    // Method to load popular words
-    override fun loadPopularWords() {
-        store.accept(DictionaryStore.Intent.LoadPopularWords)
-    }
 
     // Helper extension to convert a Store to a Value
-    private fun <T : Any> com.arkivanov.mvikotlin.core.store.Store<*, T, *>.asValue(): Value<T> {
+    private fun <T : Any> Store<*, T, *>.asValue(): Value<T> {
         val scope = CoroutineScope(Dispatchers.Main)
         val stateFlow = stateFlow(scope)
         return object : Value<T>() {
             override val value: T get() = stateFlow.value
 
-            override fun subscribe(observer: (T) -> Unit): com.arkivanov.decompose.Cancellation {
+            override fun subscribe(observer: (T) -> Unit): Cancellation {
                 val job = stateFlow
                     .onEach(observer)
                     .launchIn(scope)
 
-                return com.arkivanov.decompose.Cancellation {
+                return Cancellation {
                     job.cancel()
                     scope.cancel()
                 }

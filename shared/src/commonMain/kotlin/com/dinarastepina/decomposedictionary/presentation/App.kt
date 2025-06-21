@@ -6,21 +6,16 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import com.dinarastepina.decomposedictionary.presentation.components.RootComponent
-import com.dinarastepina.decomposedictionary.presentation.ui.MainScreen
+import com.dinarastepina.decomposedictionary.presentation.components.root.RootComponent
+import com.dinarastepina.decomposedictionary.presentation.ui.main.MainScreen
 
 @Composable
 fun App(rootComponent: RootComponent) {
-    // Render the UI based on the root component's state
     RootContent(rootComponent)
 }
 
-/**
- * Renders the content of the root component.
- */
 @Composable
 private fun RootContent(component: RootComponent) {
-    // Render different screens based on the active child in the stack
     Children(
         stack = component.stack,
         animation = stackAnimation(fade().plus(scale())),

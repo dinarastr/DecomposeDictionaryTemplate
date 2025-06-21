@@ -1,4 +1,4 @@
-package com.dinarastepina.decomposedictionary.presentation.ui
+package com.dinarastepina.decomposedictionary.presentation.ui.dictionary
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.dinarastepina.decomposedictionary.presentation.components.DictionaryComponent
+import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStore
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_clear
@@ -73,8 +73,8 @@ fun DictionaryScreen(component: DictionaryComponent) {
         if (state.query.isEmpty() && state.popularWords.isNotEmpty()) {
             PopularWordsSection(
                 popularWords = state.popularWords,
-                onWordClick = component::selectWord,
-                onRefreshClick = component::loadPopularWords
+                onWordClick = {  },
+                onRefreshClick = {  }
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -92,7 +92,7 @@ fun DictionaryScreen(component: DictionaryComponent) {
                             if (state.query.isNotEmpty()) {
                                 component.search(state.query)
                             } else {
-                                component.loadPopularWords()
+                                //component.loadPopularWords()
                             }
                         },
                         modifier = Modifier.align(Alignment.Center)
@@ -107,7 +107,9 @@ fun DictionaryScreen(component: DictionaryComponent) {
                 state.words.isNotEmpty() -> {
                     WordsList(
                         words = state.words,
-                        onWordClick = component::selectWord
+                        onWordClick = {
+
+                        }
                     )
                 }
                 state.query.isEmpty() -> {

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.retainedComponent
 import com.dinarastepina.decomposedictionary.di.koin
 import com.dinarastepina.decomposedictionary.presentation.App
-import com.dinarastepina.decomposedictionary.presentation.components.RootComponent
+import com.dinarastepina.decomposedictionary.presentation.components.root.RootComponent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

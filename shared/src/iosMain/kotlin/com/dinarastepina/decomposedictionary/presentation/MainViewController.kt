@@ -5,7 +5,7 @@ import androidx.compose.ui.window.ComposeUIViewController
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.ApplicationLifecycle
 import com.dinarastepina.decomposedictionary.di.koin
-import com.dinarastepina.decomposedictionary.presentation.components.RootComponent
+import com.dinarastepina.decomposedictionary.presentation.components.root.RootComponent
 
 fun MainViewController() = ComposeUIViewController {
     val rootComponent = remember {

@@ -1,4 +1,4 @@
-package com.dinarastepina.decomposedictionary.presentation.ui
+package com.dinarastepina.decomposedictionary.presentation.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,20 +19,18 @@ import com.dinarastepina.decomposedictionary.presentation.components.LessonDetai
 import com.dinarastepina.decomposedictionary.presentation.components.LessonSectionComponent
 import com.dinarastepina.decomposedictionary.presentation.components.LessonsComponent
 import com.dinarastepina.decomposedictionary.presentation.components.LessonsListComponent
-import com.dinarastepina.decomposedictionary.presentation.components.MainComponent
+import com.dinarastepina.decomposedictionary.presentation.components.main.MainComponent
 import com.dinarastepina.decomposedictionary.presentation.components.TopicDetailsComponent
 import com.dinarastepina.decomposedictionary.presentation.components.TopicsComponent
 import com.dinarastepina.decomposedictionary.presentation.components.TopicsListComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
+import com.dinarastepina.decomposedictionary.presentation.ui.dictionary.DictionaryScreen
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_dictionary
 import decomposedictionary.shared.generated.resources.ic_list
 import decomposedictionary.shared.generated.resources.ic_school
 import org.jetbrains.compose.resources.painterResource
 
-/**
- * Main screen with bottom navigation that displays different tabs.
- */
 @Composable
 fun MainScreen(component: MainComponent) {
     val activeTab by component.activeTab.subscribeAsState()
@@ -47,7 +45,6 @@ fun MainScreen(component: MainComponent) {
         }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            // Manual slot observation as recommended by Decompose docs
             slot.child?.instance?.also { child ->
                 when (child) {
                     is MainComponent.Child.Dictionary -> DictionaryScreen(child.component)
@@ -59,9 +56,6 @@ fun MainScreen(component: MainComponent) {
     }
 }
 
-/**
- * Bottom navigation bar with tabs for Dictionary, Topics, and Lessons.
- */
 @Composable
 private fun BottomNavigationBar(
     activeTab: TabConfig,
@@ -97,12 +91,8 @@ private fun BottomNavigationBar(
     }
 }
 
-/**
- * Screen for the Topics tab with nested navigation.
- */
 @Composable
 private fun TopicsScreen(component: TopicsComponent) {
-    // Render different screens based on the active child in the stack
     Children(
         stack = component.stack,
         animation = stackAnimation(fade()),
@@ -114,27 +104,18 @@ private fun TopicsScreen(component: TopicsComponent) {
     }
 }
 
-/**
- * Screen for the topics list.
- */
 @Composable
 private fun TopicsListScreen(component: TopicsListComponent) {
     // Implement topics list UI
     Text("Topics List Screen")
 }
 
-/**
- * Screen for topic details.
- */
 @Composable
 private fun TopicDetailsScreen(component: TopicDetailsComponent) {
     // Implement topic details UI
     Text("Topic Details Screen")
 }
 
-/**
- * Screen for the Lessons tab with nested navigation.
- */
 @Composable
 private fun LessonsScreen(component: LessonsComponent) {
     // Render different screens based on the active child in the stack
