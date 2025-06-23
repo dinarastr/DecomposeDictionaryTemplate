@@ -1,6 +1,6 @@
 package com.dinarastepina.decomposedictionary.data.mapper
 
-import com.dinarastepina.decomposedictionary.data.local.entity.WordEntity
+import com.dinarastepina.decomposedictionary.data.local.entity.RussianWordEntity
 import com.dinarastepina.decomposedictionary.data.local.entity.Translations
 import com.dinarastepina.decomposedictionary.domain.model.Translation
 import com.dinarastepina.decomposedictionary.domain.model.Word
@@ -9,7 +9,7 @@ import com.dinarastepina.decomposedictionary.domain.model.Word
  * Maps WordEntity (database model) to Word (domain model).
  * Preserves semantic separation by creating distinct Translation objects.
  */
-fun WordEntity.toDomain(): Word {
+fun RussianWordEntity.toDomain(): Word {
     return Word(
         id = id.toString(),
         text = word,
@@ -58,6 +58,6 @@ private fun Translations.toDomain(index: Int, hasMultiple: Boolean): Translation
 /**
  * Maps a list of WordEntity to a list of Word.
  */
-fun List<WordEntity>.toDomain(): List<Word> {
+fun List<RussianWordEntity>.toDomain(): List<Word> {
     return map { it.toDomain() }
 } 

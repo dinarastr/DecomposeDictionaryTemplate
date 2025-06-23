@@ -53,7 +53,7 @@ def parse_dictionary_json_to_csv(json_file_path, csv_file_path):
 
 def main():
     # File paths
-    json_file = "shared/src/commonMain/composeResources/files/json (2).txt"
+    json_file = "shared/src/commonMain/composeResources/files/json.txt"
     csv_file = "dictionary_entries.csv"
     
     # Check if JSON file exists

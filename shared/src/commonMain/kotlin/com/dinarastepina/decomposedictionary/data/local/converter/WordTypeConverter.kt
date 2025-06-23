@@ -1,13 +1,11 @@
 package com.dinarastepina.decomposedictionary.data.local.converter
 
 import androidx.room.TypeConverter
-import com.dinarastepina.decomposedictionary.data.local.entity.JsonWordEntry
 import com.dinarastepina.decomposedictionary.data.local.entity.Translations
 import com.dinarastepina.decomposedictionary.data.local.serializer.JsonConfig
 import com.dinarastepina.decomposedictionary.data.local.serializer.TranslationsListSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 
 /**

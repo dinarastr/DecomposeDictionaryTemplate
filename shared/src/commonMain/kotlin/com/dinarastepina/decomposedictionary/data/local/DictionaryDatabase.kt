@@ -7,12 +7,13 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import com.dinarastepina.decomposedictionary.data.local.converter.WordTypeConverter
 import com.dinarastepina.decomposedictionary.data.local.dao.RussianDao
-import com.dinarastepina.decomposedictionary.data.local.entity.WordEntity
+import com.dinarastepina.decomposedictionary.data.local.entity.RussianWordEntity
+import com.dinarastepina.decomposedictionary.data.local.entity.UlchiWordEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @Database(
-    entities = [WordEntity::class],
+    entities = [RussianWordEntity::class, UlchiWordEntity::class],
     version = 1,
     exportSchema = true
 )

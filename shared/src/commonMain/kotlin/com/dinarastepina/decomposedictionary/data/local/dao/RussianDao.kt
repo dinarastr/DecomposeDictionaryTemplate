@@ -2,17 +2,17 @@ package com.dinarastepina.decomposedictionary.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.dinarastepina.decomposedictionary.data.local.entity.WordEntity
+import com.dinarastepina.decomposedictionary.data.local.entity.RussianWordEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RussianDao {
 
     @Query("SELECT * FROM russian_ulchi ORDER BY id ASC LIMIT :pageSize OFFSET :offset")
-    fun getAllWords(pageSize: Int, offset: Int): Flow<List<WordEntity>>
+    fun getAllWords(pageSize: Int, offset: Int): Flow<List<RussianWordEntity>>
 
     @Query("SELECT * FROM russian_ulchi WHERE word LIKE :query || '%' ORDER BY id ASC LIMIT :pageSize OFFSET :offset")
-    fun searchWords(query: String, pageSize: Int, offset: Int): Flow<List<WordEntity>>
+    fun searchWords(query: String, pageSize: Int, offset: Int): Flow<List<RussianWordEntity>>
 
     @Query("SELECT COUNT(*) FROM russian_ulchi")
     suspend fun getWordsCount(): Int
