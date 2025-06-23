@@ -1,6 +1,5 @@
 package com.dinarastepina.decomposedictionary.data.local.entity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.dinarastepina.decomposedictionary.data.local.serializer.AcronymListSerializer
@@ -34,10 +33,7 @@ data class Translations(
     val example: List<Example> = emptyList(),
     val grammar: Grammar? = null,
     val text: String? = null,
-    val com: String? = null, // Comment field that can appear in array elements
-    val udar: String? = null, // Stressed version of the word
-    @SerialName("_langs")
-    val langs: String? = null // Language information
+    val com: String? = null // Comment field that can appear in array elements
 )
 
 @Serializable

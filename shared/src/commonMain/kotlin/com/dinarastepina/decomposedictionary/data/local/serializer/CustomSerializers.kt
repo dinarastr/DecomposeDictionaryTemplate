@@ -22,7 +22,7 @@ object TranslationsListSerializer : KSerializer<List<com.dinarastepina.decompose
 
     override fun serialize(encoder: Encoder, value: List<com.dinarastepina.decomposedictionary.data.local.entity.Translations>) {
         encoder.encodeSerializableValue(JsonArray.serializer(), JsonArray(value.map { 
-            Json.encodeToJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), it) 
+            JsonConfig.json.encodeToJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), it) 
         }))
     }
 
@@ -32,12 +32,12 @@ object TranslationsListSerializer : KSerializer<List<com.dinarastepina.decompose
         return when (jsonElement) {
             is JsonObject -> {
                 // It's a single Translations object, wrap it in a list
-                listOf(Json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), jsonElement))
+                listOf(JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), jsonElement))
             }
             is JsonArray -> {
                 // It's an array of Translations objects - preserve them separately
                 jsonElement.map { 
-                    Json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), it) 
+                    JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), it) 
                 }
             }
             else -> emptyList()
@@ -70,7 +70,7 @@ object ExampleTranslationSerializer : KSerializer<String> {
             is JsonObject -> {
                 // Try to decode as Acronym and extract text, fallback to title
                 try {
-                    val acronym = Json.decodeFromJsonElement(Acronym.serializer(), jsonElement)
+                    val acronym = JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), jsonElement)
                     acronym.text
                 } catch (e: Exception) {
                     // Fallback: try to get any text field
@@ -95,7 +95,7 @@ object AcronymListSerializer : KSerializer<List<Acronym>> {
 
     override fun serialize(encoder: Encoder, value: List<Acronym>) {
         encoder.encodeSerializableValue(JsonArray.serializer(), JsonArray(value.map { 
-            Json.encodeToJsonElement(Acronym.serializer(), it) 
+            JsonConfig.json.encodeToJsonElement(Acronym.serializer(), it) 
         }))
     }
 
@@ -106,12 +106,12 @@ object AcronymListSerializer : KSerializer<List<Acronym>> {
             is JsonArray -> {
                 // It's already an array
                 jsonElement.map { 
-                    Json.decodeFromJsonElement(Acronym.serializer(), it) 
+                    JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), it) 
                 }
             }
             is JsonObject -> {
                 // It's a single object, wrap it in a list
-                listOf(Json.decodeFromJsonElement(Acronym.serializer(), jsonElement))
+                listOf(JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), jsonElement))
             }
             else -> emptyList()
         }
@@ -130,7 +130,7 @@ object DefinitionListSerializer : KSerializer<List<Definition>> {
 
     override fun serialize(encoder: Encoder, value: List<Definition>) {
         encoder.encodeSerializableValue(JsonArray.serializer(), JsonArray(value.map { 
-            Json.encodeToJsonElement(Definition.serializer(), it) 
+            JsonConfig.json.encodeToJsonElement(Definition.serializer(), it) 
         }))
     }
 
@@ -148,7 +148,7 @@ object DefinitionListSerializer : KSerializer<List<Definition>> {
                             } else null
                         }
                         is JsonObject -> {
-                            Json.decodeFromJsonElement(Definition.serializer(), element)
+                            JsonConfig.json.decodeFromJsonElement(Definition.serializer(), element)
                         }
                         else -> null
                     }
@@ -156,7 +156,7 @@ object DefinitionListSerializer : KSerializer<List<Definition>> {
             }
             is JsonObject -> {
                 // It's a single object
-                listOf(Json.decodeFromJsonElement(Definition.serializer(), jsonElement))
+                listOf(JsonConfig.json.decodeFromJsonElement(Definition.serializer(), jsonElement))
             }
             is JsonPrimitive -> {
                 // It's a simple string
@@ -179,7 +179,7 @@ object ExampleListSerializer : KSerializer<List<com.dinarastepina.decomposedicti
 
     override fun serialize(encoder: Encoder, value: List<com.dinarastepina.decomposedictionary.data.local.entity.Example>) {
         encoder.encodeSerializableValue(JsonArray.serializer(), JsonArray(value.map { 
-            Json.encodeToJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Example.serializer(), it) 
+            JsonConfig.json.encodeToJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Example.serializer(), it) 
         }))
     }
 
@@ -190,12 +190,12 @@ object ExampleListSerializer : KSerializer<List<com.dinarastepina.decomposedicti
             is JsonArray -> {
                 // It's already an array
                 jsonElement.map { 
-                    Json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Example.serializer(), it) 
+                    JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Example.serializer(), it) 
                 }
             }
             is JsonObject -> {
                 // It's a single object, wrap it in a list
-                listOf(Json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Example.serializer(), jsonElement))
+                listOf(JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Example.serializer(), jsonElement))
             }
             else -> emptyList()
         }
