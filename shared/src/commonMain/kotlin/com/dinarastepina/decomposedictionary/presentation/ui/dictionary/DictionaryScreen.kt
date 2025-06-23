@@ -15,6 +15,7 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.dinarastepina.decomposedictionary.domain.model.Translation
 import com.dinarastepina.decomposedictionary.domain.model.Word
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
 import org.jetbrains.compose.resources.painterResource
@@ -203,27 +204,72 @@ private fun WordItem(
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = word.definition,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (word.examples.isNotEmpty()) {
+            
+            // Display each translation separately
+            word.translations.forEach { translation ->
                 Spacer(modifier = Modifier.height(8.dp))
+                TranslationItem(translation = translation)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TranslationItem(
+    translation: Translation,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        // Translation number and part of speech
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            translation.number?.let { number ->
                 Text(
-                    text = "Examples:",
+                    text = number,
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary
                 )
-                word.examples.take(2).forEach { example ->
-                    Text(
-                        text = "• $example",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(start = 8.dp, top = 2.dp)
-                    )
-                }
+            }
+            translation.partOfSpeech?.let { partOfSpeech ->
+                Text(
+                    text = partOfSpeech,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+        }
+        
+        // Definition
+        Text(
+            text = translation.definition,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp)
+        )
+        
+        // Comment (additional context)
+        translation.comment?.let { comment ->
+            Text(
+                text = "($comment)",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 2.dp)
+            )
+        }
+        
+        // Examples
+        if (translation.examples.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(4.dp))
+            translation.examples.take(2).forEach { example ->
+                Text(
+                    text = "• $example",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 8.dp, top = 1.dp)
+                )
             }
         }
     }
