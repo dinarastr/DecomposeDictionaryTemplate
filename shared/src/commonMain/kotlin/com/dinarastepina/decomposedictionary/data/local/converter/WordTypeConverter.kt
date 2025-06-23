@@ -3,8 +3,11 @@ package com.dinarastepina.decomposedictionary.data.local.converter
 import androidx.room.TypeConverter
 import com.dinarastepina.decomposedictionary.data.local.entity.JsonWordEntry
 import com.dinarastepina.decomposedictionary.data.local.entity.Translations
+import com.dinarastepina.decomposedictionary.data.local.serializer.TranslationsListSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 
 /**
  * TypeConverter for Room database to handle JSON serialization/deserialization
@@ -21,34 +24,38 @@ class WordTypeConverter {
     }
 
     /**
-     * Converts a Translations object to JSON string for database storage.
+     * Converts a List<Translations> to JSON string for database storage.
      */
     @TypeConverter
-    fun fromTranslations(translations: Translations): String {
+    fun fromTranslationsList(translations: List<Translations>): String {
         return json.encodeToString(translations)
     }
 
     /**
-     * Converts a JSON string to Translations object from database.
+     * Converts a JSON string to List<Translations> from database.
      * Handles both direct translations and full JSON word entries.
      */
     @TypeConverter
-    fun toTranslations(translationsJson: String): Translations {
+    fun toTranslationsList(translationsJson: String): List<Translations> {
         return try {
-            // First try to parse as a full JsonWordEntry (handles both formats)
-            val wordEntry = json.decodeFromString<JsonWordEntry>(translationsJson)
-            wordEntry.getNormalizedTranslations()
-        } catch (e: Exception) {
-            try {
-                // Fallback: try to parse as direct Translations object
-                json.decodeFromString<Translations>(translationsJson)
-            } catch (e2: Exception) {
-                println("Error parsing translations JSON: ${e.message}")
-                println("Fallback error: ${e2.message}")
-                println("JSON content: $translationsJson")
-                // Return empty translations object as fallback
-                Translations()
+            // Parse the full JSON structure to extract just the translations part
+            val jsonElement = Json.parseToJsonElement(translationsJson)
+            val jsonObject = jsonElement.jsonObject
+            
+            // Extract the translations field specifically
+            val translationsElement = jsonObject["translations"]
+            
+            if (translationsElement != null) {
+                // Use our TranslationsListSerializer to handle the translations field
+                json.decodeFromJsonElement(TranslationsListSerializer, translationsElement)
+            } else {
+                // If no translations field, treat the whole object as a single translation
+                val singleTranslation = json.decodeFromString<Translations>(translationsJson)
+                listOf(singleTranslation)
             }
+        } catch (e: Exception) {
+            // Fallback: return empty list if parsing fails
+            emptyList()
         }
     }
 } 

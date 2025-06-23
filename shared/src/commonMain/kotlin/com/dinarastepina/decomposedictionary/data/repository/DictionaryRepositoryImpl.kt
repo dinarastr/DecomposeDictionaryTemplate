@@ -16,6 +16,7 @@ class DictionaryRepositoryImpl(
     override fun getAllWords(pageSize: Int, offset: Int): Flow<List<Word>> {
         return russianDao.getAllWords(pageSize, offset).map { entities ->
             entities.map { entity ->
+                println(entity.toString())
                 entity.toDomain()
             }
         }

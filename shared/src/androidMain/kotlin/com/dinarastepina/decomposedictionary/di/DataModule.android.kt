@@ -9,6 +9,5 @@ import org.koin.dsl.module
 actual fun platformModule() = module {
     single<RoomDatabase.Builder<DictionaryDatabase>> {
         getDatabaseBuilder(get())
-            .setDriver(BundledSQLiteDriver())
     }
 }

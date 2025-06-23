@@ -1,12 +1,13 @@
 package com.dinarastepina.decomposedictionary.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.dinarastepina.decomposedictionary.data.local.serializer.AcronymListSerializer
 import com.dinarastepina.decomposedictionary.data.local.serializer.DefinitionListSerializer
 import com.dinarastepina.decomposedictionary.data.local.serializer.ExampleListSerializer
 import com.dinarastepina.decomposedictionary.data.local.serializer.ExampleTranslationSerializer
-import com.dinarastepina.decomposedictionary.data.local.serializer.TranslationsSerializer
+import com.dinarastepina.decomposedictionary.data.local.serializer.TranslationsListSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,13 +19,12 @@ data class WordEntity(
     @PrimaryKey
     val id: Int = 0,
     val word: String,
-    @Serializable(with = TranslationsSerializer::class)
-    val translation: Translations
+    @Serializable(with = TranslationsListSerializer::class)
+    val translations: List<Translations>
 )
 
 @Serializable
 data class Translations(
-    val udar: String? = null,
     @Serializable(with = AcronymListSerializer::class)
     val acronym: List<Acronym> = emptyList(),
     val pre: String? = null,
@@ -34,9 +34,7 @@ data class Translations(
     val example: List<Example> = emptyList(),
     val grammar: Grammar? = null,
     val text: String? = null,
-    val com: String? = null, // Comment field that can appear in array elements
-    @SerialName("_langs")
-    val langs: String? = null
+    val com: String? = null // Comment field that can appear in array elements
 )
 
 @Serializable
@@ -70,18 +68,6 @@ data class Grammar(
 @Serializable
 data class JsonWordEntry(
     val word: String,
-    val udar: String? = null, // Can be at top level
-    @Serializable(with = TranslationsSerializer::class)
-    val translations: Translations
-) {
-    /**
-     * Returns a normalized Translations object that includes top-level udar if present
-     */
-    fun getNormalizedTranslations(): Translations {
-        return if (udar != null && translations.udar == null) {
-            translations.copy(udar = udar)
-        } else {
-            translations
-        }
-    }
-}
+    @Serializable(with = TranslationsListSerializer::class)
+    val translations: List<Translations>
+)

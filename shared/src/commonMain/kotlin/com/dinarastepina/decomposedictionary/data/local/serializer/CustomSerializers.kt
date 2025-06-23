@@ -15,88 +15,33 @@ import kotlinx.serialization.json.*
  * Custom serializer for the entire translations field that can be either:
  * - A single Translations object
  * - An array of Translations objects
- * Always returns a single Translations object by merging array elements
+ * Always returns a List<Translations> preserving semantic separation
  */
-object TranslationsSerializer : KSerializer<com.dinarastepina.decomposedictionary.data.local.entity.Translations> {
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Translations")
+object TranslationsListSerializer : KSerializer<List<com.dinarastepina.decomposedictionary.data.local.entity.Translations>> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("TranslationsList")
 
-    override fun serialize(encoder: Encoder, value: com.dinarastepina.decomposedictionary.data.local.entity.Translations) {
-        encoder.encodeSerializableValue(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), value)
+    override fun serialize(encoder: Encoder, value: List<com.dinarastepina.decomposedictionary.data.local.entity.Translations>) {
+        encoder.encodeSerializableValue(JsonArray.serializer(), JsonArray(value.map { 
+            Json.encodeToJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), it) 
+        }))
     }
 
-    override fun deserialize(decoder: Decoder): com.dinarastepina.decomposedictionary.data.local.entity.Translations {
+    override fun deserialize(decoder: Decoder): List<com.dinarastepina.decomposedictionary.data.local.entity.Translations> {
         val jsonElement = decoder.decodeSerializableValue(JsonElement.serializer())
         
         return when (jsonElement) {
             is JsonObject -> {
-                // It's a single Translations object
-                Json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), jsonElement)
+                // It's a single Translations object, wrap it in a list
+                listOf(Json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), jsonElement))
             }
             is JsonArray -> {
-                // It's an array of Translations objects - merge them
-                val translationsList = jsonElement.map { 
+                // It's an array of Translations objects - preserve them separately
+                jsonElement.map { 
                     Json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), it) 
                 }
-                
-                // Merge all translations into a single object
-                mergeTranslations(translationsList)
             }
-            else -> com.dinarastepina.decomposedictionary.data.local.entity.Translations()
+            else -> emptyList()
         }
-    }
-    
-    /**
-     * Merges multiple Translations objects into a single one by combining their fields
-     */
-    private fun mergeTranslations(translationsList: List<com.dinarastepina.decomposedictionary.data.local.entity.Translations>): com.dinarastepina.decomposedictionary.data.local.entity.Translations {
-        if (translationsList.isEmpty()) {
-            return com.dinarastepina.decomposedictionary.data.local.entity.Translations()
-        }
-        
-        if (translationsList.size == 1) {
-            return translationsList.first()
-        }
-        
-        // Merge fields from all translations
-        val mergedAcronyms = mutableListOf<com.dinarastepina.decomposedictionary.data.local.entity.Acronym>()
-        val mergedDefinitions = mutableListOf<com.dinarastepina.decomposedictionary.data.local.entity.Definition>()
-        val mergedExamples = mutableListOf<com.dinarastepina.decomposedictionary.data.local.entity.Example>()
-        val mergedTexts = mutableListOf<String>()
-        val mergedComments = mutableListOf<String>()
-        
-        var udar: String? = null
-        var pre: String? = null
-        var grammar: com.dinarastepina.decomposedictionary.data.local.entity.Grammar? = null
-        var langs: String? = null
-        
-        translationsList.forEach { translation ->
-            // Take the first non-null values for single-value fields
-            if (udar == null) udar = translation.udar
-            if (pre == null) pre = translation.pre
-            if (grammar == null) grammar = translation.grammar
-            if (langs == null) langs = translation.langs
-            
-            // Collect text and comment fields
-            translation.text?.let { mergedTexts.add(it) }
-            translation.com?.let { mergedComments.add(it) }
-            
-            // Merge list fields
-            mergedAcronyms.addAll(translation.acronym)
-            mergedDefinitions.addAll(translation.definition)
-            mergedExamples.addAll(translation.example)
-        }
-        
-        return com.dinarastepina.decomposedictionary.data.local.entity.Translations(
-            udar = udar,
-            acronym = mergedAcronyms,
-            pre = pre,
-            definition = mergedDefinitions,
-            example = mergedExamples,
-            grammar = grammar,
-            text = if (mergedTexts.isNotEmpty()) mergedTexts.joinToString(" | ") else null,
-            com = if (mergedComments.isNotEmpty()) mergedComments.joinToString(" | ") else null,
-            langs = langs
-        )
     }
 }
 
