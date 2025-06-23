@@ -2,6 +2,7 @@ package com.dinarastepina.decomposedictionary.data.local.serializer
 
 import com.dinarastepina.decomposedictionary.data.local.entity.Acronym
 import com.dinarastepina.decomposedictionary.data.local.entity.Definition
+import com.dinarastepina.decomposedictionary.data.local.entity.UlchiDefinition
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -162,6 +163,49 @@ object DefinitionListSerializer : KSerializer<List<Definition>> {
                 // It's a simple string
                 if (jsonElement.isString) {
                     listOf(Definition(com = null, text = jsonElement.content))
+                } else emptyList()
+            }
+        }
+    }
+}
+
+object UlchiDefinitionListSerializer : KSerializer<List<UlchiDefinition>> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("UlchiDefinitionList")
+
+    override fun serialize(encoder: Encoder, value: List<UlchiDefinition>) {
+        encoder.encodeSerializableValue(JsonArray.serializer(), JsonArray(value.map {
+            JsonConfig.json.encodeToJsonElement(UlchiDefinition.serializer(), it)
+        }))
+    }
+
+    override fun deserialize(decoder: Decoder): List<UlchiDefinition> {
+        val jsonElement = decoder.decodeSerializableValue(JsonElement.serializer())
+
+        return when (jsonElement) {
+            is JsonArray -> {
+                // It's an array, decode each element
+                jsonElement.mapNotNull { element ->
+                    when (element) {
+                        is JsonPrimitive -> {
+                            if (element.isString) {
+                                UlchiDefinition(com = null, text = element.content)
+                            } else null
+                        }
+                        is JsonObject -> {
+                            JsonConfig.json.decodeFromJsonElement(UlchiDefinition.serializer(), element)
+                        }
+                        else -> null
+                    }
+                }
+            }
+            is JsonObject -> {
+                // It's a single object
+                listOf(JsonConfig.json.decodeFromJsonElement(UlchiDefinition.serializer(), jsonElement))
+            }
+            is JsonPrimitive -> {
+                // It's a simple string
+                if (jsonElement.isString) {
+                    listOf(UlchiDefinition(com = null, text = jsonElement.content))
                 } else emptyList()
             }
         }

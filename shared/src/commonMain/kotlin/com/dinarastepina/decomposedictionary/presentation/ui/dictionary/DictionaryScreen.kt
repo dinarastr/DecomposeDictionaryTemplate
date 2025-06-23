@@ -15,8 +15,10 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.dinarastepina.decomposedictionary.domain.model.LANGUAGE
 import com.dinarastepina.decomposedictionary.domain.model.Translation
-import com.dinarastepina.decomposedictionary.domain.model.Word
+import com.dinarastepina.decomposedictionary.domain.model.RussianWord
+import com.dinarastepina.decomposedictionary.presentation.components.LanguageSettingsButton
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
 import org.jetbrains.compose.resources.painterResource
 import decomposedictionary.shared.generated.resources.Res
@@ -37,16 +39,22 @@ fun DictionaryScreen(component: DictionaryComponent) {
         onClearSearch = component::clearSearch,
         words = words,
         isLoading = state.isLoading,
-        error = state.error
+        error = state.error,
+        currentLanguage = state.selectedLanguage,
+        targetLanguage = state.targetLanguage,
+        onLanguageSelected = component::changeLanguage
     )
 }
 
 @Composable
 private fun DictionaryContent(
+    currentLanguage: LANGUAGE,
+    targetLanguage: LANGUAGE,
+    onLanguageSelected: (LANGUAGE) -> Unit,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     onClearSearch: () -> Unit,
-    words: LazyPagingItems<Word>,
+    words: LazyPagingItems<RussianWord>,
     isLoading: Boolean,
     error: String?
 ) {
@@ -63,13 +71,19 @@ private fun DictionaryContent(
             modifier = Modifier.fillMaxWidth()
         )
 
+        LanguageSettingsButton(
+            languageOne = currentLanguage,
+            languageTwo = targetLanguage,
+            onClick = onLanguageSelected
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Error handling
         if (error != null) {
             ErrorSection(
                 error = error,
-                onRetryClick = { 
+                onRetryClick = {
                     if (searchQuery.isNotEmpty()) {
                         onSearchQueryChange(searchQuery)
                     }
@@ -189,7 +203,7 @@ private fun SearchBar(
 
 @Composable
 private fun WordItem(
-    word: Word,
+    word: RussianWord,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -204,7 +218,14 @@ private fun WordItem(
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
-            
+
+            word.grammar?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+
             // Display each translation separately
             word.translations.forEach { translation ->
                 Spacer(modifier = Modifier.height(8.dp))
@@ -241,7 +262,7 @@ private fun TranslationItem(
                 )
             }
         }
-        
+
         // Definition
         Text(
             text = translation.definition,
@@ -249,7 +270,7 @@ private fun TranslationItem(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp)
         )
-        
+
         // Comment (additional context)
         translation.comment?.let { comment ->
             Text(
@@ -259,7 +280,7 @@ private fun TranslationItem(
                 modifier = Modifier.padding(top = 2.dp)
             )
         }
-        
+
         // Examples
         if (translation.examples.isNotEmpty()) {
             Spacer(modifier = Modifier.height(4.dp))

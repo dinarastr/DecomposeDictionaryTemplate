@@ -20,7 +20,7 @@ def parse_dictionary_json_to_csv(json_file_path, csv_file_path):
         
         # Create CSV file
         with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['id', 'word', 'entry']
+            fieldnames = ['id', 'word', 'grammar', 'entry']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             
             # Write header
@@ -30,6 +30,7 @@ def parse_dictionary_json_to_csv(json_file_path, csv_file_path):
             for index, entry in enumerate(entries, start=1):
                 # Extract the word
                 word = entry.get('word', '')
+                grammar = entry.get('grammar', '')
                 
                 # Convert the entire entry to JSON string
                 entry_json = json.dumps(entry, ensure_ascii=False, separators=(',', ':'))
@@ -38,6 +39,7 @@ def parse_dictionary_json_to_csv(json_file_path, csv_file_path):
                 writer.writerow({
                     'id': index,
                     'word': word,
+                    'grammar': grammar,
                     'entry': entry_json
                 })
         
@@ -53,7 +55,7 @@ def parse_dictionary_json_to_csv(json_file_path, csv_file_path):
 
 def main():
     # File paths
-    json_file = "shared/src/commonMain/composeResources/files/json.txt"
+    json_file = "shared/src/androidMain/assets/files/json.txt"
     csv_file = "dictionary_entries.csv"
     
     # Check if JSON file exists

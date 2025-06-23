@@ -3,9 +3,10 @@ package com.dinarastepina.decomposedictionary.domain.model
 /**
  * Domain model representing a word in the dictionary.
  */
-data class Word(
+data class RussianWord(
     val id: String,
     val text: String,
+    val grammar: String? = null,
     val translations: List<Translation>
 )
 
@@ -19,12 +20,3 @@ data class Translation(
     val comment: String? = null, // Additional context like "то, что взято взаймы"
     val number: String? = null // Roman numerals like "I.", "II." for different meanings
 )
-
-/**
- * Enum representing word difficulty levels.
- */
-enum class Difficulty {
-    BEGINNER,
-    INTERMEDIATE,
-    ADVANCED
-} 

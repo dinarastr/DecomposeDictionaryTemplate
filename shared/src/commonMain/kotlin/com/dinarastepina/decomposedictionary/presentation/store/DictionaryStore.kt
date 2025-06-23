@@ -9,14 +9,18 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import com.dinarastepina.decomposedictionary.data.paging.WordPagingSource
+import com.dinarastepina.decomposedictionary.data.paging.RussianWordPagingSource
+import com.dinarastepina.decomposedictionary.data.paging.UlchiWordPagingSource
 import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepository
-import com.dinarastepina.decomposedictionary.domain.model.Word
+import com.dinarastepina.decomposedictionary.domain.model.LANGUAGE
+import com.dinarastepina.decomposedictionary.domain.model.RussianWord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -30,7 +34,7 @@ interface DictionaryStore : Store<DictionaryStore.Intent, DictionaryStore.State,
     /**
      * Paging data flow for infinite scrolling.
      */
-    val wordsPagingFlow: Flow<PagingData<Word>>
+    val wordsPagingFlow: Flow<PagingData<RussianWord>>
     
     /**
      * Intents that can be sent to the store.
@@ -41,12 +45,9 @@ interface DictionaryStore : Store<DictionaryStore.Intent, DictionaryStore.State,
         
         // Intent to clear the search
         data object ClearSearch : Intent()
-        
-        // Intent to select a word
-        data class SelectWord(val word: Word) : Intent()
-        
-        // Intent to load popular words
-        data object LoadPopularWords : Intent()
+
+        data object ChangeLanguage: Intent()
+
     }
     
     /**
@@ -54,22 +55,21 @@ interface DictionaryStore : Store<DictionaryStore.Intent, DictionaryStore.State,
      */
     data class State(
         val query: String = "",
-        val words: List<Word> = emptyList(),
-        val popularWords: List<Word> = emptyList(),
+        val words: List<RussianWord> = emptyList(),
         val isLoading: Boolean = false,
         val error: String? = null,
-        val isInitialized: Boolean = false
+        val isInitialized: Boolean = false,
+        val selectedLanguage: LANGUAGE = LANGUAGE.RUSSIAN,
+        val targetLanguage: LANGUAGE = LANGUAGE.ULCHI
     )
     
     /**
      * One-time events emitted by the store.
      */
     sealed class Label {
-        // Label for when a word is selected
-        data class WordSelected(val word: Word) : Label()
-        
+
         // Label for navigation events
-        data class NavigateToWordDetail(val word: Word) : Label()
+        data class NavigateToWordDetail(val word: RussianWord) : Label()
     }
 }
 
@@ -84,6 +84,7 @@ class DictionaryStoreFactory(
     /**
      * Creates a new instance of the DictionaryStore.
      */
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun create(): DictionaryStore {
         // Create a scope for paging operations
         val pagingScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -100,30 +101,50 @@ class DictionaryStoreFactory(
         return object : DictionaryStore, Store<DictionaryStore.Intent, DictionaryStore.State, DictionaryStore.Label> by store {
             // Paging implementation
             private val queryFlow = MutableStateFlow("")
+            private val selectedLanguageFlow = MutableStateFlow(LANGUAGE.RUSSIAN)
             
-            override val wordsPagingFlow: Flow<PagingData<Word>> = queryFlow.flatMapLatest { query ->
-                Pager(
-                    config = PagingConfig(
-                        pageSize = 20,
-                        enablePlaceholders = false,
-                        prefetchDistance = 5
-                    ),
-                    pagingSourceFactory = {
-                        WordPagingSource(
-                            repository = repository,
-                            searchQuery = query
-                        )
-                    }
-                ).flow
+            override val wordsPagingFlow: Flow<PagingData<RussianWord>> = combine(queryFlow, selectedLanguageFlow) { query, language ->
+                query to language
+            }.flatMapLatest { (query, language) ->
+                when (language) {
+                    LANGUAGE.RUSSIAN -> Pager(
+                        config = PagingConfig(
+                            pageSize = 20,
+                            enablePlaceholders = false,
+                            prefetchDistance = 5
+                        ),
+                        pagingSourceFactory = {
+                            RussianWordPagingSource(
+                                repository = repository,
+                                searchQuery = query
+                            )
+                        }
+                    ).flow
+
+                    LANGUAGE.ULCHI -> Pager(
+                        config = PagingConfig(
+                            pageSize = 20,
+                            enablePlaceholders = false,
+                            prefetchDistance = 5
+                        ),
+                        pagingSourceFactory = {
+                            UlchiWordPagingSource(
+                                repository = repository,
+                                searchQuery = query
+                            )
+                        }
+                    ).flow
+                }
             }
-            
-            init {
-                // Update query flow when state changes
-                store.stateFlow(pagingScope).onEach { storeState ->
-                    queryFlow.value = storeState.query
-                }.launchIn(pagingScope)
+
+                init {
+                    // Update query flow when state changes
+                    store.stateFlow(pagingScope).onEach { storeState ->
+                        queryFlow.value = storeState.query
+                        selectedLanguageFlow.value = storeState.selectedLanguage
+                    }.launchIn(pagingScope)
+                }
             }
-        }
     }
     
     /**
@@ -133,10 +154,7 @@ class DictionaryStoreFactory(
     private sealed class Action {
         // Action to initialize the store
         data object Initialize : Action()
-        
-        // Action to load popular words automatically
-        data object LoadPopularWords : Action()
-        
+
         // Action to refresh data periodically
         data object RefreshData : Action()
         
@@ -148,13 +166,14 @@ class DictionaryStoreFactory(
      * Messages that can be sent to the reducer.
      */
     private sealed class Message {
-        data class WordsLoaded(val words: List<Word>) : Message()
-        data class PopularWordsLoaded(val words: List<Word>) : Message()
+        data class WordsLoaded(val words: List<RussianWord>) : Message()
         data class QueryChanged(val query: String) : Message()
         data class ErrorOccurred(val error: String) : Message()
+
         data object LoadingStarted : Message()
         data object SearchCleared : Message()
         data object Initialized : Message()
+        data object LanguageChanged: Message()
     }
     
     /**
@@ -164,7 +183,6 @@ class DictionaryStoreFactory(
         override fun invoke() {
             // Send initial actions when store is created
             dispatch(Action.Initialize)
-            dispatch(Action.LoadPopularWords)
         }
     }
     
@@ -177,18 +195,13 @@ class DictionaryStoreFactory(
             when (intent) {
                 is DictionaryStore.Intent.Search -> handleSearch(intent.query)
                 is DictionaryStore.Intent.ClearSearch -> clearSearch()
-                is DictionaryStore.Intent.SelectWord -> selectWord(intent.word)
-                is DictionaryStore.Intent.LoadPopularWords -> {
-                    // Intent can trigger an action for complex logic
-                    executeAction(Action.LoadPopularWords)
-                }
+                is DictionaryStore.Intent.ChangeLanguage -> changelanguage()
             }
         }
         
         override fun executeAction(action: Action) {
             when (action) {
                 is Action.Initialize -> initialize()
-                is Action.LoadPopularWords -> loadPopularWords()
                 is Action.RefreshData -> refreshData()
                 is Action.PerformDebouncedSearch -> performDebouncedSearch(action.query)
             }
@@ -206,14 +219,17 @@ class DictionaryStoreFactory(
             executeAction(Action.PerformDebouncedSearch(query))
         }
         
-        private fun selectWord(word: Word) {
+        private fun selectWord(word: RussianWord) {
             // Publish label for navigation
-            publish(DictionaryStore.Label.WordSelected(word))
             publish(DictionaryStore.Label.NavigateToWordDetail(word))
         }
         
         private fun clearSearch() {
             dispatch(Message.SearchCleared)
+        }
+
+        private fun changelanguage() {
+            dispatch(Message.LanguageChanged)
         }
         
         private fun initialize() {
@@ -228,36 +244,19 @@ class DictionaryStoreFactory(
             }
         }
         
-        private fun loadPopularWords() {
-            scope.launch {
-                try {
-                    dispatch(Message.LoadingStarted)
-                    // Get first 20 words as popular words
-                    repository.getAllWords(pageSize = 20, offset = 0)
-                        .onEach { domainWords ->
-                            dispatch(Message.PopularWordsLoaded(domainWords))
-                        }
-                        .launchIn(scope)
-                } catch (e: Exception) {
-                    dispatch(Message.ErrorOccurred("Failed to load popular words: ${e.message}"))
-                }
-            }
-        }
-        
         private fun refreshData() {
             scope.launch {
                 try {
                     // Refresh both current search and popular words
                     val currentQuery = state().query
                     if (currentQuery.isNotBlank()) {
-                        repository.searchWords(currentQuery, pageSize = 20, offset = 0)
+                        repository.searchRussianWords(currentQuery, pageSize = 20, offset = 0)
                             .onEach { domainWords ->
                                 dispatch(Message.WordsLoaded(domainWords))
                             }
                             .launchIn(scope)
                     }
                     // Refresh popular words
-                    executeAction(Action.LoadPopularWords)
                 } catch (e: Exception) {
                     dispatch(Message.ErrorOccurred("Failed to refresh data: ${e.message}"))
                 }
@@ -273,7 +272,7 @@ class DictionaryStoreFactory(
                     
                     // Check if query is still current
                     if (state().query == query) {
-                        repository.searchWords(query, pageSize = 20, offset = 0)
+                        repository.searchRussianWords(query, pageSize = 20, offset = 0)
                             .onEach { domainWords ->
                                 dispatch(Message.WordsLoaded(domainWords))
                             }
@@ -297,11 +296,6 @@ class DictionaryStoreFactory(
                     isLoading = false,
                     error = null
                 )
-                is Message.PopularWordsLoaded -> copy(
-                    popularWords = message.words,
-                    isLoading = false,
-                    error = null
-                )
                 is Message.QueryChanged -> copy(
                     query = message.query
                 )
@@ -321,6 +315,9 @@ class DictionaryStoreFactory(
                 )
                 is Message.Initialized -> copy(
                     isInitialized = true
+                )
+                is Message.LanguageChanged -> copy(
+                    selectedLanguage = if (selectedLanguage == LANGUAGE.RUSSIAN) LANGUAGE.ULCHI else LANGUAGE.RUSSIAN
                 )
             }
     }

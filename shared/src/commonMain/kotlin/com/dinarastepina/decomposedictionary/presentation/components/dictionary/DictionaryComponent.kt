@@ -3,7 +3,8 @@ package com.dinarastepina.decomposedictionary.presentation.components.dictionary
 import app.cash.paging.PagingData
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
-import com.dinarastepina.decomposedictionary.domain.model.Word
+import com.dinarastepina.decomposedictionary.domain.model.LANGUAGE
+import com.dinarastepina.decomposedictionary.domain.model.RussianWord
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,14 +14,11 @@ interface DictionaryComponent {
     // Expose the state as a Value (observable)
     val state: Value<State>
 
-    // Expose word selection events as a Flow
-    val wordSelections: Flow<Word>
-    
     // Expose navigation events as a Flow
-    val navigationEvents: Flow<Word>
+    val navigationEvents: Flow<RussianWord>
 
     // Expose paging flow for infinite scrolling
-    val wordsPagingFlow: Flow<PagingData<Word>>
+    val wordsPagingFlow: Flow<PagingData<RussianWord>>
 
     // Method to search for a word
     fun search(query: String)
@@ -28,13 +26,17 @@ interface DictionaryComponent {
     // Method to clear the search
     fun clearSearch()
 
+    fun changeLanguage(language: LANGUAGE)
+
     /**
      * State of the dictionary component.
      */
     data class State(
         val query: String = "",
-        val words: List<Word> = emptyList(),
-        val popularWords: List<Word> = emptyList(),
+        val selectedLanguage: LANGUAGE = LANGUAGE.RUSSIAN,
+        val targetLanguage: LANGUAGE = LANGUAGE.ULCHI,
+        val words: List<RussianWord> = emptyList(),
+        val popularWords: List<RussianWord> = emptyList(),
         val isLoading: Boolean = false,
         val error: String? = null,
         val isInitialized: Boolean = false

@@ -5,8 +5,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
+import com.dinarastepina.decomposedictionary.data.local.converter.UlchiTypeConverter
 import com.dinarastepina.decomposedictionary.data.local.converter.WordTypeConverter
 import com.dinarastepina.decomposedictionary.data.local.dao.RussianDao
+import com.dinarastepina.decomposedictionary.data.local.dao.UlchiDao
 import com.dinarastepina.decomposedictionary.data.local.entity.RussianWordEntity
 import com.dinarastepina.decomposedictionary.data.local.entity.UlchiWordEntity
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +19,11 @@ import kotlinx.coroutines.IO
     version = 1,
     exportSchema = true
 )
-@TypeConverters(WordTypeConverter::class)
+@TypeConverters(WordTypeConverter::class, UlchiTypeConverter::class)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class DictionaryDatabase : RoomDatabase() {
     abstract fun getRussianDao(): RussianDao
+    abstract fun getUlchiDao(): UlchiDao
 }
 
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<DictionaryDatabase> {
@@ -36,3 +39,4 @@ fun getRoomDatabase(
 }
 
 fun getRussianDao(appDatabase: DictionaryDatabase) = appDatabase.getRussianDao()
+fun getUlchiDao(appDatabase: DictionaryDatabase) = appDatabase.getUlchiDao()
