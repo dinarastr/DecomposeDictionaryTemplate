@@ -59,6 +59,7 @@ private fun DictionaryContent(
     error: String?
 ) {
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
@@ -222,7 +223,7 @@ private fun WordItem(
             word.grammar?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
 

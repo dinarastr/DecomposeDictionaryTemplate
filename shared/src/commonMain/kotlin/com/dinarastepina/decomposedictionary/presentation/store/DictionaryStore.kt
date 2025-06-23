@@ -317,7 +317,8 @@ class DictionaryStoreFactory(
                     isInitialized = true
                 )
                 is Message.LanguageChanged -> copy(
-                    selectedLanguage = if (selectedLanguage == LANGUAGE.RUSSIAN) LANGUAGE.ULCHI else LANGUAGE.RUSSIAN
+                    selectedLanguage = if (selectedLanguage == LANGUAGE.RUSSIAN) LANGUAGE.ULCHI else LANGUAGE.RUSSIAN,
+                    targetLanguage = if (targetLanguage == LANGUAGE.RUSSIAN) LANGUAGE.ULCHI else LANGUAGE.RUSSIAN
                 )
             }
     }
