@@ -1,4 +1,4 @@
-package com.dinarastepina.decomposedictionary.data.repository
+package com.dinarastepina.decomposedictionary.domain.repository
 
 import com.dinarastepina.decomposedictionary.domain.model.Word
 import kotlinx.coroutines.flow.Flow
@@ -20,4 +20,4 @@ interface DictionaryRepository {
     suspend fun getUlchiWordsCount(): Int
 
     suspend fun getSearchUlchiResultsCount(query: String): Int
-} 
+}

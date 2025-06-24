@@ -15,14 +15,10 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.dinarastepina.decomposedictionary.presentation.components.LessonDetailsComponent
-import com.dinarastepina.decomposedictionary.presentation.components.LessonSectionComponent
-import com.dinarastepina.decomposedictionary.presentation.components.LessonsComponent
-import com.dinarastepina.decomposedictionary.presentation.components.LessonsListComponent
 import com.dinarastepina.decomposedictionary.presentation.components.main.MainComponent
-import com.dinarastepina.decomposedictionary.presentation.components.TopicDetailsComponent
-import com.dinarastepina.decomposedictionary.presentation.components.TopicsComponent
-import com.dinarastepina.decomposedictionary.presentation.components.TopicsListComponent
+import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.phrases.PhrasesComponent
+import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsComponent
+import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsListComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 import com.dinarastepina.decomposedictionary.presentation.ui.dictionary.DictionaryScreen
 import decomposedictionary.shared.generated.resources.Res
@@ -49,7 +45,6 @@ fun MainScreen(component: MainComponent) {
                 when (child) {
                     is MainComponent.Child.Dictionary -> DictionaryScreen(child.component)
                     is MainComponent.Child.Topics -> TopicsScreen(child.component)
-                    is MainComponent.Child.Lessons -> LessonsScreen(child.component)
                 }
             }
         }
@@ -80,14 +75,14 @@ private fun BottomNavigationBar(
             onClick = { onTabSelected(TabConfig.Topics.List) }
         )
         
-        NavigationBarItem(
-            icon = { Icon(
-                painter = painterResource(Res.drawable.ic_school),
-                contentDescription = "Lessons") },
-            label = { Text("Lessons") },
-            selected = activeTab is TabConfig.Lessons,
-            onClick = { onTabSelected(TabConfig.Lessons.List) }
-        )
+//        NavigationBarItem(
+//            icon = { Icon(
+//                painter = painterResource(Res.drawable.ic_school),
+//                contentDescription = "Lessons") },
+//            label = { Text("Lessons") },
+//            selected = activeTab is TabConfig.Lessons,
+//            onClick = { onTabSelected(TabConfig.Lessons.List) }
+//        )
     }
 }
 
@@ -100,6 +95,7 @@ private fun TopicsScreen(component: TopicsComponent) {
         when (val instance = child.instance) {
             is TopicsComponent.Child.List -> TopicsListScreen(instance.component)
             is TopicsComponent.Child.Details -> TopicDetailsScreen(instance.component)
+            is TopicsComponent.Child.Search -> Text("")
         }
     }
 }
@@ -111,49 +107,7 @@ private fun TopicsListScreen(component: TopicsListComponent) {
 }
 
 @Composable
-private fun TopicDetailsScreen(component: TopicDetailsComponent) {
+private fun TopicDetailsScreen(component: PhrasesComponent) {
     // Implement topic details UI
     Text("Topic Details Screen")
-}
-
-@Composable
-private fun LessonsScreen(component: LessonsComponent) {
-    // Render different screens based on the active child in the stack
-    Children(
-        stack = component.stack,
-        animation = stackAnimation(fade()),
-    ) { child ->
-        when (val instance = child.instance) {
-            is LessonsComponent.Child.List -> LessonsListScreen(instance.component)
-            is LessonsComponent.Child.Details -> LessonDetailsScreen(instance.component)
-            is LessonsComponent.Child.Section -> LessonSectionScreen(instance.component)
-        }
-    }
-}
-
-/**
- * Screen for the lessons list.
- */
-@Composable
-private fun LessonsListScreen(component: LessonsListComponent) {
-    // Implement lessons list UI
-    Text("Lessons List Screen")
-}
-
-/**
- * Screen for lesson details with sections.
- */
-@Composable
-private fun LessonDetailsScreen(component: LessonDetailsComponent) {
-    // Implement lesson details UI
-    Text("Lesson Details Screen")
-}
-
-/**
- * Screen for a lesson section.
- */
-@Composable
-private fun LessonSectionScreen(component: LessonSectionComponent) {
-    // Implement lesson section UI
-    Text("Lesson Section Screen")
 }

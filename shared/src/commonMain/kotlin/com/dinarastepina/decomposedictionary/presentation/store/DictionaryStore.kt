@@ -11,8 +11,8 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.dinarastepina.decomposedictionary.data.paging.RussianWordPagingSource
 import com.dinarastepina.decomposedictionary.data.paging.UlchiWordPagingSource
-import com.dinarastepina.decomposedictionary.data.repository.DataStoreRepository
-import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepository
+import com.dinarastepina.decomposedictionary.domain.repository.DataStoreRepository
+import com.dinarastepina.decomposedictionary.domain.repository.DictionaryRepository
 import com.dinarastepina.decomposedictionary.domain.model.LANGUAGE
 import com.dinarastepina.decomposedictionary.domain.model.Word
 import kotlinx.coroutines.CoroutineScope

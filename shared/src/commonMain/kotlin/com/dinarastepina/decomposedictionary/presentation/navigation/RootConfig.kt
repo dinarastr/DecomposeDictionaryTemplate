@@ -20,17 +20,8 @@ sealed class TabConfig {
         
         @Serializable
         data class Details(val topicId: String) : Topics()
-    }
-    
-    @Serializable
-    sealed class Lessons : TabConfig() {
+
         @Serializable
-        data object List : Lessons()
-        
-        @Serializable
-        data class Details(val lessonId: String) : Lessons()
-        
-        @Serializable
-        data class Section(val lessonId: String, val sectionId: String) : Lessons()
+        data object Search : Topics()
     }
 }

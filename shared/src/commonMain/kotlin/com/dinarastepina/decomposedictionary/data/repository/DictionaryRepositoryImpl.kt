@@ -4,6 +4,7 @@ import com.dinarastepina.decomposedictionary.data.local.dao.RussianDao
 import com.dinarastepina.decomposedictionary.data.local.dao.UlchiDao
 import com.dinarastepina.decomposedictionary.data.mapper.toDomain
 import com.dinarastepina.decomposedictionary.domain.model.Word
+import com.dinarastepina.decomposedictionary.domain.repository.DictionaryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

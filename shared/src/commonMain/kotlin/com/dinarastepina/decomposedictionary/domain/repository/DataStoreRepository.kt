@@ -1,4 +1,4 @@
-package com.dinarastepina.decomposedictionary.data.repository
+package com.dinarastepina.decomposedictionary.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 

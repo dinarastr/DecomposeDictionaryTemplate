@@ -26,9 +26,6 @@ import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_search
 import decomposedictionary.shared.generated.resources.ic_clear
 
-/**
- * Screen for the Dictionary tab with paging support.
- */
 @Composable
 fun DictionaryScreen(component: DictionaryComponent) {
     val state by component.state.subscribeAsState()

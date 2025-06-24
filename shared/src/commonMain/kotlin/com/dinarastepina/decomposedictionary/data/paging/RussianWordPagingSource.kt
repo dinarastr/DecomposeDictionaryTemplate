@@ -1,6 +1,6 @@
 package com.dinarastepina.decomposedictionary.data.paging
 
-import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepository
+import com.dinarastepina.decomposedictionary.domain.repository.DictionaryRepository
 import com.dinarastepina.decomposedictionary.domain.model.Word
 import kotlinx.coroutines.flow.first
 

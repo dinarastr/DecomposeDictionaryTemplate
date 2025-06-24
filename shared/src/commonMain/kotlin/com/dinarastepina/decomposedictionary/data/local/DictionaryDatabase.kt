@@ -7,15 +7,22 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import com.dinarastepina.decomposedictionary.data.local.converter.UlchiTypeConverter
 import com.dinarastepina.decomposedictionary.data.local.converter.WordTypeConverter
+import com.dinarastepina.decomposedictionary.data.local.dao.PhraseBookDao
 import com.dinarastepina.decomposedictionary.data.local.dao.RussianDao
+import com.dinarastepina.decomposedictionary.data.local.dao.TextsDao
 import com.dinarastepina.decomposedictionary.data.local.dao.UlchiDao
-import com.dinarastepina.decomposedictionary.data.local.entity.RussianWordEntity
-import com.dinarastepina.decomposedictionary.data.local.entity.UlchiWordEntity
+import com.dinarastepina.decomposedictionary.data.local.entity.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @Database(
-    entities = [RussianWordEntity::class, UlchiWordEntity::class],
+    entities = [
+        RussianWordEntity::class,
+        UlchiWordEntity::class,
+        PhraseEntity::class,
+        TopicEntity::class,
+        TextEntity::class
+    ],
     version = 1,
     exportSchema = true
 )
@@ -24,6 +31,8 @@ import kotlinx.coroutines.IO
 abstract class DictionaryDatabase : RoomDatabase() {
     abstract fun getRussianDao(): RussianDao
     abstract fun getUlchiDao(): UlchiDao
+    abstract fun getPhraseBookDao(): PhraseBookDao
+    abstract fun getTextsDao(): TextsDao
 }
 
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<DictionaryDatabase> {
@@ -40,3 +49,5 @@ fun getRoomDatabase(
 
 fun getRussianDao(appDatabase: DictionaryDatabase) = appDatabase.getRussianDao()
 fun getUlchiDao(appDatabase: DictionaryDatabase) = appDatabase.getUlchiDao()
+fun getPhraseBookDao(appDatabase: DictionaryDatabase) = appDatabase.getPhraseBookDao()
+fun getTextsDao(appDatabase: DictionaryDatabase) = appDatabase.getTextsDao()
