@@ -43,7 +43,7 @@ class DefaultTopicsComponent(
                 component = phrasesComponentFactory(context, config.topic, ::navigateBack)
             )
             is TabConfig.Topics.Search -> TopicsComponent.Child.Search(
-                component = searchComponentFactory(context)
+                component = searchComponentFactory(context, ::navigateBack)
             )
         }
     

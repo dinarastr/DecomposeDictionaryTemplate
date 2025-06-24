@@ -20,6 +20,7 @@ import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 import com.dinarastepina.decomposedictionary.presentation.ui.dictionary.DictionaryScreen
 import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.phrases.PhrasesScreen
+import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.search.SearchScreen
 import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.topics.TopicsListScreen
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_dictionary
@@ -96,7 +97,7 @@ private fun TopicsScreen(component: TopicsComponent) {
         when (val instance = child.instance) {
             is TopicsComponent.Child.List -> TopicsListScreen(instance.component)
             is TopicsComponent.Child.Details -> PhrasesScreen(instance.component)
-            is TopicsComponent.Child.Search -> Text("Search")
+            is TopicsComponent.Child.Search -> SearchScreen(instance.component)
         }
     }
 }

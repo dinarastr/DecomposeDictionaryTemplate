@@ -14,6 +14,7 @@ interface TopicsListComponent {
     )
 
     fun onTopicSelected(topicId: Int, topicName: String)
+    fun onSearchClicked()
 
     fun interface Factory {
         operator fun invoke(

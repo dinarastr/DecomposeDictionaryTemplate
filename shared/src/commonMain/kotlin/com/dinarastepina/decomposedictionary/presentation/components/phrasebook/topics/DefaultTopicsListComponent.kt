@@ -55,6 +55,10 @@ class DefaultTopicsListComponent(
         }
     }
     
+    override fun onSearchClicked() {
+        onSearchBarClicked()
+    }
+    
     private fun TopicsStore.asValue(): Value<TopicsStore.State> {
         val scope = CoroutineScope(Dispatchers.Main)
         val stateFlow = store.stateFlow(scope)

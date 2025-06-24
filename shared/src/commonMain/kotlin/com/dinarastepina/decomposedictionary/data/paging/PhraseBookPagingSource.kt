@@ -9,10 +9,10 @@ class PhraseBookPagingSource(
     searchQuery: String = ""
 ): BasePagingSource<Phrase>(searchQuery) {
     override suspend fun loadAllItems(pageSize: Int, offset: Int): List<Phrase> {
-        return repository.getAllPhrases(pageSize, offset).first()
+        return repository.getAllPhrases(pageSize = pageSize, offset = offset).first()
     }
 
     override suspend fun searchItems(query: String, pageSize: Int, offset: Int): List<Phrase> {
-        return repository.searchPhrases(query, pageSize, offset).first()
+        return repository.searchPhrases(query, pageSize = pageSize, offset = offset).first()
     }
 }

@@ -9,10 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,7 +26,11 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsListComponent
 import com.dinarastepina.decomposedictionary.presentation.ui.kit.TopicCard
+import decomposedictionary.shared.generated.resources.Res
+import decomposedictionary.shared.generated.resources.ic_search
+import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicsListScreen(
     component: TopicsListComponent,
@@ -30,7 +38,29 @@ fun TopicsListScreen(
     val state by component.state.subscribeAsState()
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.primary
+        containerColor = MaterialTheme.colorScheme.primary,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Topics",
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+                actions = {
+                    IconButton(onClick = component::onSearchClicked) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_search),
+                            contentDescription = "Search phrases",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
     ) { paddingValues ->
         if (state.error != null) {
             Box(

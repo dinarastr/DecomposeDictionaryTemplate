@@ -20,7 +20,7 @@ class PhraseBookRepositoryImpl(
     }
 
     override fun getAllPhrases(offset: Int, pageSize: Int): Flow<List<Phrase>> {
-        return phraseBookDao.getAllPhrases(pageSize, offset).map { phrases ->
+        return phraseBookDao.getAllPhrases(pageSize = pageSize, offset = offset).map { phrases ->
             phrases.map { it.toDomain() }
         }
     }
@@ -30,7 +30,7 @@ class PhraseBookRepositoryImpl(
         offset: Int,
         pageSize: Int
     ): Flow<List<Phrase>> {
-        return phraseBookDao.searchPhrases(query, pageSize, offset).map { phrases ->
+        return phraseBookDao.searchPhrases(query, pageSize = pageSize, offset = offset).map { phrases ->
             phrases.map { it.toDomain() }
         }
     }

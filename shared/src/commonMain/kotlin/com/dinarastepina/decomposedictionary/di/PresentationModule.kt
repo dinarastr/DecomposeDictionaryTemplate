@@ -18,6 +18,7 @@ import com.dinarastepina.decomposedictionary.presentation.components.root.Defaul
 import com.dinarastepina.decomposedictionary.presentation.components.root.RootComponent
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStoreFactory
 import com.dinarastepina.decomposedictionary.presentation.store.PhrasesStoreFactory
+import com.dinarastepina.decomposedictionary.presentation.store.SearchStoreFactory
 import com.dinarastepina.decomposedictionary.presentation.store.TopicsStoreFactory
 import org.koin.dsl.module
 
@@ -27,6 +28,7 @@ val presentationModule = module {
     factory { DictionaryStoreFactory(get(), get(), get()) }
     factory { TopicsStoreFactory(get(), get()) }
     factory { PhrasesStoreFactory(get(), get(), get()) }
+    factory { SearchStoreFactory(get(), get(), get()) }
     
     factory<DictionaryComponent.Factory> {
         DefaultDictionaryComponent.Factory(get())
@@ -66,10 +68,11 @@ val presentationModule = module {
     }
     
     factory<SearchComponent.Factory> {
-        SearchComponent.Factory { componentContext ->
+        SearchComponent.Factory { componentContext, onNavigateBack ->
             DefaultSearchComponent(
                 componentContext = componentContext,
-                storeFactory = get()
+                searchStoreFactory = get(),
+                onNavigateBack = onNavigateBack
             )
         }
     }
