@@ -8,10 +8,13 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.dinarastepina.decomposedictionary.presentation.components.root.RootComponent
 import com.dinarastepina.decomposedictionary.presentation.ui.main.MainScreen
+import com.dinarastepina.decomposedictionary.presentation.ui.ui.AppTheme
 
 @Composable
 fun App(rootComponent: RootComponent) {
-    RootContent(rootComponent)
+    AppTheme {
+        RootContent(rootComponent)
+    }
 }
 
 @Composable
