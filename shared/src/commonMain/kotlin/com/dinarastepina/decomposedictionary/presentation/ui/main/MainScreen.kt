@@ -20,6 +20,7 @@ import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.
 import com.dinarastepina.decomposedictionary.presentation.components.texts.TextsComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 import com.dinarastepina.decomposedictionary.presentation.ui.dictionary.DictionaryScreen
+import com.dinarastepina.decomposedictionary.presentation.ui.info.InfoScreen
 import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.phrases.PhrasesScreen
 import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.search.SearchScreen
 import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.topics.TopicsListScreen
@@ -51,6 +52,7 @@ fun MainScreen(component: MainComponent) {
                     is MainComponent.Child.Dictionary -> DictionaryScreen(child.component)
                     is MainComponent.Child.Topics -> TopicsScreen(child.component)
                     is MainComponent.Child.Texts -> TextsScreen(child.component)
+                    is MainComponent.Child.Info -> InfoScreen(child.component)
                 }
             }
         }
@@ -84,20 +86,20 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_communication),
-                contentDescription = "Lessons") },
+                contentDescription = "Texts") },
             label = { Text("Texts") },
             selected = activeTab is TabConfig.Texts,
             onClick = { onTabSelected(TabConfig.Texts.List) }
         )
+        
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_info),
-                contentDescription = "Lessons") },
+                contentDescription = "Info") },
             label = { Text("Info") },
-            selected = activeTab is TabConfig.Texts,
-            onClick = { onTabSelected(TabConfig.Texts.List) }
+            selected = activeTab is TabConfig.Info,
+            onClick = { onTabSelected(TabConfig.Info) }
         )
-
     }
 }
 

@@ -10,6 +10,7 @@ import com.arkivanov.decompose.value.operator.map
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsComponent
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
 import com.dinarastepina.decomposedictionary.presentation.components.texts.TextsComponent
+import com.dinarastepina.decomposedictionary.presentation.components.info.InfoComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 
 class DefaultMainComponent(
@@ -17,6 +18,7 @@ class DefaultMainComponent(
     private val dictionaryComponentFactory: DictionaryComponent.Factory,
     private val topicsComponentFactory: TopicsComponent.Factory,
     private val textsComponentFactory: TextsComponent.Factory,
+    private val infoComponentFactory: InfoComponent.Factory,
 ) : MainComponent, ComponentContext by componentContext {
     
     private val navigation = SlotNavigation<TabConfig>()
@@ -49,8 +51,8 @@ class DefaultMainComponent(
             is TabConfig.Texts -> MainComponent.Child.Texts(
                 component = textsComponentFactory(context)
             )
-            is TabConfig.Info -> MainComponent.Child.Texts(
-                component = textsComponentFactory(context)
+            is TabConfig.Info -> MainComponent.Child.Info(
+                component = infoComponentFactory(context)
             )
         }
     
@@ -58,13 +60,15 @@ class DefaultMainComponent(
         private val dictionaryComponentFactory: DictionaryComponent.Factory,
         private val topicsComponentFactory: TopicsComponent.Factory,
         private val textsComponentFactory: TextsComponent.Factory,
+        private val infoComponentFactory: InfoComponent.Factory,
     ) : MainComponent.Factory {
         override fun invoke(componentContext: ComponentContext): MainComponent =
             DefaultMainComponent(
                 componentContext = componentContext,
                 dictionaryComponentFactory = dictionaryComponentFactory,
                 topicsComponentFactory = topicsComponentFactory,
-                textsComponentFactory = textsComponentFactory
+                textsComponentFactory = textsComponentFactory,
+                infoComponentFactory = infoComponentFactory
             )
     }
 }

@@ -6,6 +6,7 @@ import com.arkivanov.decompose.value.Value
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsComponent
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
 import com.dinarastepina.decomposedictionary.presentation.components.texts.TextsComponent
+import com.dinarastepina.decomposedictionary.presentation.components.info.InfoComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 
 interface MainComponent {
@@ -19,6 +20,7 @@ interface MainComponent {
         data class Dictionary(val component: DictionaryComponent) : Child()
         data class Topics(val component: TopicsComponent) : Child()
         data class Texts(val component: TextsComponent) : Child()
+        data class Info(val component: InfoComponent) : Child()
     }
     
     fun interface Factory {

@@ -4,6 +4,8 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DefaultDictionaryComponent
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
+import com.dinarastepina.decomposedictionary.presentation.components.info.DefaultInfoComponent
+import com.dinarastepina.decomposedictionary.presentation.components.info.InfoComponent
 import com.dinarastepina.decomposedictionary.presentation.components.main.DefaultMainComponent
 import com.dinarastepina.decomposedictionary.presentation.components.main.MainComponent
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.phrases.DefaultPhrasesComponent
@@ -118,11 +120,18 @@ val presentationModule = module {
         }
     }
     
+    factory<InfoComponent.Factory> {
+        InfoComponent.Factory { componentContext ->
+            DefaultInfoComponent(componentContext = componentContext)
+        }
+    }
+    
     factory<MainComponent.Factory> {
         DefaultMainComponent.Factory(
             dictionaryComponentFactory = get(),
             topicsComponentFactory = get(),
-            textsComponentFactory = get()
+            textsComponentFactory = get(),
+            infoComponentFactory = get()
         )
     }
     
