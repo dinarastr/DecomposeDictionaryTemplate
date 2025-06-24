@@ -16,11 +16,11 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.dinarastepina.decomposedictionary.presentation.components.main.MainComponent
-import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.phrases.PhrasesComponent
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsComponent
-import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsListComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 import com.dinarastepina.decomposedictionary.presentation.ui.dictionary.DictionaryScreen
+import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.phrases.PhrasesScreen
+import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.topics.TopicsListScreen
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_dictionary
 import decomposedictionary.shared.generated.resources.ic_list
@@ -45,6 +45,7 @@ fun MainScreen(component: MainComponent) {
                 when (child) {
                     is MainComponent.Child.Dictionary -> DictionaryScreen(child.component)
                     is MainComponent.Child.Topics -> TopicsScreen(child.component)
+                    is MainComponent.Child.Texts -> Text("")
                 }
             }
         }
@@ -75,14 +76,14 @@ private fun BottomNavigationBar(
             onClick = { onTabSelected(TabConfig.Topics.List) }
         )
         
-//        NavigationBarItem(
-//            icon = { Icon(
-//                painter = painterResource(Res.drawable.ic_school),
-//                contentDescription = "Lessons") },
-//            label = { Text("Lessons") },
-//            selected = activeTab is TabConfig.Lessons,
-//            onClick = { onTabSelected(TabConfig.Lessons.List) }
-//        )
+        NavigationBarItem(
+            icon = { Icon(
+                painter = painterResource(Res.drawable.ic_school),
+                contentDescription = "Lessons") },
+            label = { Text("Lessons") },
+            selected = activeTab is TabConfig.Texts,
+            onClick = { onTabSelected(TabConfig.Texts.List) }
+        )
     }
 }
 
@@ -94,20 +95,8 @@ private fun TopicsScreen(component: TopicsComponent) {
     ) { child ->
         when (val instance = child.instance) {
             is TopicsComponent.Child.List -> TopicsListScreen(instance.component)
-            is TopicsComponent.Child.Details -> TopicDetailsScreen(instance.component)
+            is TopicsComponent.Child.Details -> PhrasesScreen(instance.component)
             is TopicsComponent.Child.Search -> Text("")
         }
     }
-}
-
-@Composable
-private fun TopicsListScreen(component: TopicsListComponent) {
-    // Implement topics list UI
-    Text("Topics List Screen")
-}
-
-@Composable
-private fun TopicDetailsScreen(component: PhrasesComponent) {
-    // Implement topic details UI
-    Text("Topic Details Screen")
 }

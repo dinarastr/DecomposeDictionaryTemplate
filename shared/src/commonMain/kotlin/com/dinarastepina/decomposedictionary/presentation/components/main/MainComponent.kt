@@ -17,6 +17,7 @@ interface MainComponent {
     sealed class Child {
         data class Dictionary(val component: DictionaryComponent) : Child()
         data class Topics(val component: TopicsComponent) : Child()
+        data class Texts(val component: TopicsComponent) : Child()
     }
     
     fun interface Factory {

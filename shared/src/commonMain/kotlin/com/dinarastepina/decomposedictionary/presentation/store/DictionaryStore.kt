@@ -120,10 +120,6 @@ class DictionaryStoreFactory(
         }
     }
 
-    /**
-     * Actions that can occur within the store - these are internal events
-     * triggered by the bootstrapper or executor for complex business logic.
-     */
     private sealed class Action {
         data object Initialize : Action()
         

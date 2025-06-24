@@ -24,4 +24,13 @@ sealed class TabConfig {
         @Serializable
         data object Search : Topics()
     }
+
+    @Serializable
+    sealed class Texts : TabConfig() {
+        @Serializable
+        data object List : Texts()
+
+        @Serializable
+        data class Details(val textId: String) : Texts()
+    }
 }

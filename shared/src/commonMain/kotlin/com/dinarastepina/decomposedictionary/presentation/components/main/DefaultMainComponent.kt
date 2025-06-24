@@ -44,6 +44,9 @@ class DefaultMainComponent(
             is TabConfig.Topics -> MainComponent.Child.Topics(
                 component = topicsComponentFactory(context)
             )
+            is TabConfig.Texts -> MainComponent.Child.Texts(
+                component = topicsComponentFactory(context)
+            )
         }
     
     class Factory(

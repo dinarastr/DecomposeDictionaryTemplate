@@ -14,7 +14,6 @@ import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 
 class DefaultTopicsComponent(
     componentContext: ComponentContext,
-    private val storeFactory: StoreFactory,
     private val topicsListComponentFactory: TopicsListComponent.Factory,
     private val phrasesComponentFactory: PhrasesComponent.Factory,
     private val searchComponentFactory: SearchComponent.Factory,

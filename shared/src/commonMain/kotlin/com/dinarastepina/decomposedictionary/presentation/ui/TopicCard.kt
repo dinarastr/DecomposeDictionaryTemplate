@@ -3,6 +3,7 @@ package com.dinarastepina.decomposedictionary.presentation.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun TopicCard(
     title: String,
+    subtitle: String,
     imageRes: String = "",
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -56,11 +58,18 @@ fun TopicCard(
                     .align(Alignment.BottomCenter),
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
             ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(16.dp)
-                )
+                Column {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                }
+
             }
         }
     }

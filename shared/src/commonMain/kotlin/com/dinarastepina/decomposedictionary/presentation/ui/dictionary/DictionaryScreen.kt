@@ -103,12 +103,10 @@ private fun DictionaryContent(
                         modifier = Modifier.fillMaxWidth()
                     )
                 } else {
-                    // Placeholder for loading items
                     WordItemPlaceholder()
                 }
             }
 
-            // Loading indicator at the end
             if (words.loadState.append.endOfPaginationReached.not()) {
                 item {
                     Box(
@@ -122,7 +120,6 @@ private fun DictionaryContent(
                 }
             }
 
-            // Show message when no results
             if (words.itemCount == 0 && searchQuery.isNotEmpty()) {
                 item {
                     Box(
@@ -220,7 +217,6 @@ private fun WordItem(
                 )
             }
 
-            // Display each translation separately
             word.translations.forEach { translation ->
                 Spacer(modifier = Modifier.height(8.dp))
                 TranslationItem(translation = translation)
@@ -235,7 +231,6 @@ private fun TranslationItem(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        // Translation number and part of speech
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -257,7 +252,6 @@ private fun TranslationItem(
             }
         }
 
-        // Definition
         Text(
             text = translation.definition,
             style = MaterialTheme.typography.bodyMedium,
@@ -265,7 +259,6 @@ private fun TranslationItem(
             modifier = Modifier.padding(top = 4.dp)
         )
 
-        // Comment (additional context)
         translation.comment?.let { comment ->
             Text(
                 text = "($comment)",
@@ -275,7 +268,6 @@ private fun TranslationItem(
             )
         }
 
-        // Examples
         if (translation.examples.isNotEmpty()) {
             Spacer(modifier = Modifier.height(4.dp))
             translation.examples.take(2).forEach { example ->
