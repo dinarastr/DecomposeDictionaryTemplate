@@ -17,10 +17,6 @@ import kotlinx.coroutines.flow.onEach
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.decompose.Cancellation
 
-/**
- * Default implementation of PhrasesComponent.
- * Handles business logic for displaying phrases of a specific topic.
- */
 class DefaultPhrasesComponent(
     componentContext: ComponentContext,
     private val topic: Topic,
