@@ -17,6 +17,7 @@ import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.
 import com.dinarastepina.decomposedictionary.presentation.components.root.DefaultRootComponent
 import com.dinarastepina.decomposedictionary.presentation.components.root.RootComponent
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStoreFactory
+import com.dinarastepina.decomposedictionary.presentation.store.PhrasesStoreFactory
 import com.dinarastepina.decomposedictionary.presentation.store.TopicsStoreFactory
 import org.koin.dsl.module
 
@@ -25,6 +26,7 @@ val presentationModule = module {
     
     factory { DictionaryStoreFactory(get(), get(), get()) }
     factory { TopicsStoreFactory(get(), get()) }
+    factory { PhrasesStoreFactory(get(), get(), get()) }
     
     factory<DictionaryComponent.Factory> {
         DefaultDictionaryComponent.Factory(get())
@@ -53,10 +55,12 @@ val presentationModule = module {
     }
     
     factory<PhrasesComponent.Factory> {
-        PhrasesComponent.Factory { componentContext, topicId ->
+        PhrasesComponent.Factory { componentContext, topic, onNavigateBack ->
             DefaultPhrasesComponent(
                 componentContext = componentContext,
-                topicId = topicId
+                topic = topic,
+                phrasesStoreFactory = get(),
+                onNavigateBack = onNavigateBack
             )
         }
     }

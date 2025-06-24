@@ -1,4 +1,4 @@
-package com.dinarastepina.decomposedictionary.presentation.ui
+package com.dinarastepina.decomposedictionary.presentation.ui.kit
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

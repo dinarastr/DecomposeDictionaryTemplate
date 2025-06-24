@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.router.stack.ChildStack
+import com.dinarastepina.decomposedictionary.domain.model.Topic
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.phrases.PhrasesComponent
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.search.SearchComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
@@ -39,15 +40,15 @@ class DefaultTopicsComponent(
                 )
             )
             is TabConfig.Topics.Details -> TopicsComponent.Child.Details(
-                component = phrasesComponentFactory(context, config.topicId)
+                component = phrasesComponentFactory(context, config.topic, ::navigateBack)
             )
             is TabConfig.Topics.Search -> TopicsComponent.Child.Search(
                 component = searchComponentFactory(context)
             )
         }
     
-    override fun navigateToPhrases(topicId: String) {
-        navigation.push(TabConfig.Topics.Details(topicId))
+    override fun navigateToPhrases(topic: Topic) {
+        navigation.push(TabConfig.Topics.Details(topic))
     }
 
     override fun navigateToSearch() {

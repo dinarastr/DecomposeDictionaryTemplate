@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsListComponent
-import com.dinarastepina.decomposedictionary.presentation.ui.TopicCard
+import com.dinarastepina.decomposedictionary.presentation.ui.kit.TopicCard
 
 @Composable
 fun TopicsListScreen(

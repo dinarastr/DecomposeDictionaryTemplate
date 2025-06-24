@@ -1,5 +1,6 @@
 package com.dinarastepina.decomposedictionary.presentation.navigation
 
+import com.dinarastepina.decomposedictionary.domain.model.Topic
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,7 +20,7 @@ sealed class TabConfig {
         data object List : Topics()
         
         @Serializable
-        data class Details(val topicId: String) : Topics()
+        data class Details(val topic: Topic) : Topics()
 
         @Serializable
         data object Search : Topics()

@@ -5,6 +5,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import com.dinarastepina.decomposedictionary.domain.model.Topic
 import com.dinarastepina.decomposedictionary.presentation.store.TopicsStore
 import com.dinarastepina.decomposedictionary.presentation.store.TopicsStoreFactory
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,7 @@ import kotlinx.coroutines.flow.onEach
 class DefaultTopicsListComponent(
     componentContext: ComponentContext,
     private val topicsStoreFactory: TopicsStoreFactory,
-    private val onTopicSelected: (String) -> Unit,
+    private val onTopicSelected: (Topic) -> Unit,
     private val onSearchBarClicked: () -> Unit
 ) : TopicsListComponent, ComponentContext by componentContext {
     
@@ -42,7 +43,7 @@ class DefaultTopicsListComponent(
                 }
             }
             .onEach { topic ->
-                onTopicSelected(topic.id.toString())
+                onTopicSelected(topic)
             }
             .launchIn(scope)
     }
