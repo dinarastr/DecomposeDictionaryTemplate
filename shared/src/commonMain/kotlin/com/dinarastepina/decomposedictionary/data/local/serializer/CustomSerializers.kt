@@ -3,21 +3,45 @@ package com.dinarastepina.decomposedictionary.data.local.serializer
 import com.dinarastepina.decomposedictionary.data.local.entity.Acronym
 import com.dinarastepina.decomposedictionary.data.local.entity.Definition
 import com.dinarastepina.decomposedictionary.data.local.entity.UlchiDefinition
+import com.dinarastepina.decomposedictionary.data.local.entity.UlchiTranslation
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonPrimitive
 
-/**
- * Custom serializer for the entire translations field that can be either:
- * - A single Translations object
- * - An array of Translations objects
- * Always returns a List<Translations> preserving semantic separation
- */
+object UlchiTranslationsListSerializer : KSerializer<List<UlchiTranslation>> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("UlchiTranslationsList")
+
+    override fun serialize(encoder: Encoder, value: List<UlchiTranslation>) {
+        encoder.encodeSerializableValue(JsonArray.serializer(), JsonArray(value.map {
+            JsonConfig.json.encodeToJsonElement(UlchiTranslation.serializer(), it)
+        }))
+    }
+
+    override fun deserialize(decoder: Decoder): List<UlchiTranslation> {
+        val jsonElement = decoder.decodeSerializableValue(JsonElement.serializer())
+
+        return when (jsonElement) {
+            is JsonObject -> {
+                listOf(JsonConfig.json.decodeFromJsonElement(UlchiTranslation.serializer(), jsonElement))
+            }
+            is JsonArray -> {
+                jsonElement.map {
+                    JsonConfig.json.decodeFromJsonElement(UlchiTranslation.serializer(), it)
+                }
+            }
+            else -> emptyList()
+        }
+    }
+}
+
+
 object TranslationsListSerializer : KSerializer<List<com.dinarastepina.decomposedictionary.data.local.entity.Translations>> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("TranslationsList")
 
@@ -32,12 +56,10 @@ object TranslationsListSerializer : KSerializer<List<com.dinarastepina.decompose
         
         return when (jsonElement) {
             is JsonObject -> {
-                // It's a single Translations object, wrap it in a list
                 listOf(JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), jsonElement))
             }
             is JsonArray -> {
-                // It's an array of Translations objects - preserve them separately
-                jsonElement.map { 
+                jsonElement.map {
                     JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Translations.serializer(), it) 
                 }
             }
@@ -46,12 +68,6 @@ object TranslationsListSerializer : KSerializer<List<com.dinarastepina.decompose
     }
 }
 
-/**
- * Custom serializer for ex_tr field in Example that can be either:
- * - A simple string
- * - An Acronym object
- * Always returns a string for consistency
- */
 object ExampleTranslationSerializer : KSerializer<String> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ExampleTranslation")
 
@@ -69,13 +85,11 @@ object ExampleTranslationSerializer : KSerializer<String> {
                 } else jsonElement.toString()
             }
             is JsonObject -> {
-                // Try to decode as Acronym and extract text, fallback to title
                 try {
                     val acronym = JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), jsonElement)
                     acronym.text
                 } catch (e: Exception) {
-                    // Fallback: try to get any text field
-                    jsonElement["text"]?.jsonPrimitive?.content 
+                    jsonElement["text"]?.jsonPrimitive?.content
                         ?: jsonElement["title"]?.jsonPrimitive?.content 
                         ?: jsonElement.toString()
                 }
@@ -85,12 +99,6 @@ object ExampleTranslationSerializer : KSerializer<String> {
     }
 }
 
-/**
- * Custom serializer for acronym field that can be either:
- * - A single Acronym object
- * - An array of Acronym objects
- * Always returns a List<Acronym> for consistency
- */
 object AcronymListSerializer : KSerializer<List<Acronym>> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("AcronymList")
 
@@ -105,13 +113,11 @@ object AcronymListSerializer : KSerializer<List<Acronym>> {
         
         return when (jsonElement) {
             is JsonArray -> {
-                // It's already an array
-                jsonElement.map { 
+                jsonElement.map {
                     JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), it) 
                 }
             }
             is JsonObject -> {
-                // It's a single object, wrap it in a list
                 listOf(JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), jsonElement))
             }
             else -> emptyList()
@@ -119,13 +125,6 @@ object AcronymListSerializer : KSerializer<List<Acronym>> {
     }
 }
 
-/**
- * Custom serializer for definition field that can be either:
- * - A simple string
- * - A Definition object with com and text fields
- * - An array of Definition objects
- * Always returns a List<Definition> for consistency
- */
 object DefinitionListSerializer : KSerializer<List<Definition>> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("DefinitionList")
 
@@ -140,7 +139,6 @@ object DefinitionListSerializer : KSerializer<List<Definition>> {
         
         return when (jsonElement) {
             is JsonArray -> {
-                // It's an array, decode each element
                 jsonElement.mapNotNull { element ->
                     when (element) {
                         is JsonPrimitive -> {
@@ -156,11 +154,9 @@ object DefinitionListSerializer : KSerializer<List<Definition>> {
                 }
             }
             is JsonObject -> {
-                // It's a single object
                 listOf(JsonConfig.json.decodeFromJsonElement(Definition.serializer(), jsonElement))
             }
             is JsonPrimitive -> {
-                // It's a simple string
                 if (jsonElement.isString) {
                     listOf(Definition(com = null, text = jsonElement.content))
                 } else emptyList()
@@ -183,7 +179,6 @@ object UlchiDefinitionListSerializer : KSerializer<List<UlchiDefinition>> {
 
         return when (jsonElement) {
             is JsonArray -> {
-                // It's an array, decode each element
                 jsonElement.mapNotNull { element ->
                     when (element) {
                         is JsonPrimitive -> {
@@ -199,11 +194,9 @@ object UlchiDefinitionListSerializer : KSerializer<List<UlchiDefinition>> {
                 }
             }
             is JsonObject -> {
-                // It's a single object
                 listOf(JsonConfig.json.decodeFromJsonElement(UlchiDefinition.serializer(), jsonElement))
             }
             is JsonPrimitive -> {
-                // It's a simple string
                 if (jsonElement.isString) {
                     listOf(UlchiDefinition(com = null, text = jsonElement.content))
                 } else emptyList()
@@ -212,12 +205,6 @@ object UlchiDefinitionListSerializer : KSerializer<List<UlchiDefinition>> {
     }
 }
 
-/**
- * Custom serializer for example field that can be either:
- * - A single Example object
- * - An array of Example objects
- * Always returns a List<Example> for consistency
- */
 object ExampleListSerializer : KSerializer<List<com.dinarastepina.decomposedictionary.data.local.entity.Example>> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ExampleList")
 
@@ -232,13 +219,11 @@ object ExampleListSerializer : KSerializer<List<com.dinarastepina.decomposedicti
         
         return when (jsonElement) {
             is JsonArray -> {
-                // It's already an array
-                jsonElement.map { 
+                jsonElement.map {
                     JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Example.serializer(), it) 
                 }
             }
             is JsonObject -> {
-                // It's a single object, wrap it in a list
                 listOf(JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Example.serializer(), jsonElement))
             }
             else -> emptyList()

@@ -13,6 +13,7 @@ sqlite = "2.5.1"
 ksp = "2.1.20-2.0.1"
 kotlinx-serialization = "1.7.3"
 paging = "3.3.0-alpha02-0.5.1"
+datastorePreferences = "1.1.7"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -56,6 +57,8 @@ essenty-lifecycle-coroutines = { module = "com.arkivanov.essenty:lifecycle-corou
 
 # Kotlinx Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.dinarastepina.decomposedictionary.data.local.serializer.ExampleListSerializer
 import com.dinarastepina.decomposedictionary.data.local.serializer.UlchiDefinitionListSerializer
+import com.dinarastepina.decomposedictionary.data.local.serializer.UlchiTranslationsListSerializer
 import kotlinx.serialization.Serializable
 
 @Entity(tableName = "ulchi_russian")

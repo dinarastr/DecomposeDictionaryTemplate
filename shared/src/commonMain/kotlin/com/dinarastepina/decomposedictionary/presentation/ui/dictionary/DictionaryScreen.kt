@@ -17,9 +17,10 @@ import app.cash.paging.compose.itemKey
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.dinarastepina.decomposedictionary.domain.model.LANGUAGE
 import com.dinarastepina.decomposedictionary.domain.model.Translation
-import com.dinarastepina.decomposedictionary.domain.model.RussianWord
+import com.dinarastepina.decomposedictionary.domain.model.Word
 import com.dinarastepina.decomposedictionary.presentation.components.LanguageSettingsButton
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
+import com.dinarastepina.decomposedictionary.utils.hideKeyboardOnTap
 import org.jetbrains.compose.resources.painterResource
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_search
@@ -38,7 +39,6 @@ fun DictionaryScreen(component: DictionaryComponent) {
         onSearchQueryChange = component::search,
         onClearSearch = component::clearSearch,
         words = words,
-        isLoading = state.isLoading,
         error = state.error,
         currentLanguage = state.selectedLanguage,
         targetLanguage = state.targetLanguage,
@@ -54,8 +54,7 @@ private fun DictionaryContent(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     onClearSearch: () -> Unit,
-    words: LazyPagingItems<RussianWord>,
-    isLoading: Boolean,
+    words: LazyPagingItems<Word>,
     error: String?
 ) {
     Column(
@@ -64,7 +63,6 @@ private fun DictionaryContent(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Search Bar
         SearchBar(
             query = searchQuery,
             onQueryChange = onSearchQueryChange,
@@ -80,7 +78,6 @@ private fun DictionaryContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Error handling
         if (error != null) {
             ErrorSection(
                 error = error,
@@ -89,14 +86,13 @@ private fun DictionaryContent(
                         onSearchQueryChange(searchQuery)
                     }
                 },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally).hideKeyboardOnTap()
             )
             return@Column
         }
 
-        // Words List with Paging
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
@@ -130,12 +126,13 @@ private fun DictionaryContent(
             }
 
             // Show message when no results
-            if (words.itemCount == 0 && searchQuery.isNotEmpty() && !isLoading) {
+            if (words.itemCount == 0 && searchQuery.isNotEmpty()) {
                 item {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(32.dp),
+                            .padding(32.dp)
+                            .hideKeyboardOnTap(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -146,8 +143,7 @@ private fun DictionaryContent(
                 }
             }
 
-            // Show initial message when no search query
-            if (words.itemCount == 0 && searchQuery.isEmpty() && !isLoading) {
+            if (words.itemCount == 0 && searchQuery.isEmpty()) {
                 item {
                     Box(
                         modifier = Modifier
@@ -204,7 +200,7 @@ private fun SearchBar(
 
 @Composable
 private fun WordItem(
-    word: RussianWord,
+    word: Word,
     modifier: Modifier = Modifier
 ) {
     Card(

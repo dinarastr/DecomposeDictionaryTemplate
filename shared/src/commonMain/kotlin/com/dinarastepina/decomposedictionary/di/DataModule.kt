@@ -6,6 +6,8 @@ import com.dinarastepina.decomposedictionary.data.local.dao.UlchiDao
 import com.dinarastepina.decomposedictionary.data.local.getRoomDatabase
 import com.dinarastepina.decomposedictionary.data.local.getRussianDao
 import com.dinarastepina.decomposedictionary.data.local.getUlchiDao
+import com.dinarastepina.decomposedictionary.data.repository.DataStoreRepository
+import com.dinarastepina.decomposedictionary.data.repository.DataStoreRepositoryImpl
 import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepository
 import com.dinarastepina.decomposedictionary.data.repository.DictionaryRepositoryImpl
 import org.koin.core.module.Module
@@ -27,5 +29,8 @@ val dataModule = module {
     }
     single<DictionaryRepository> {
         DictionaryRepositoryImpl(get(), get())
+    }
+    single<DataStoreRepository> {
+        DataStoreRepositoryImpl(get())
     }
 } 

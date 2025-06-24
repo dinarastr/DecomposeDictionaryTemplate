@@ -3,7 +3,7 @@ package com.dinarastepina.decomposedictionary.data.repository
 import com.dinarastepina.decomposedictionary.data.local.dao.RussianDao
 import com.dinarastepina.decomposedictionary.data.local.dao.UlchiDao
 import com.dinarastepina.decomposedictionary.data.mapper.toDomain
-import com.dinarastepina.decomposedictionary.domain.model.RussianWord
+import com.dinarastepina.decomposedictionary.domain.model.Word
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -12,7 +12,7 @@ class DictionaryRepositoryImpl(
     private val ulchiDao: UlchiDao
 ) : DictionaryRepository {
     
-    override fun getAllRussianWords(pageSize: Int, offset: Int): Flow<List<RussianWord>> {
+    override fun getAllRussianWords(pageSize: Int, offset: Int): Flow<List<Word>> {
         return russianDao.getAllWords(pageSize, offset).map { entities ->
             entities.map { entity ->
                 println(entity.toString())
@@ -21,7 +21,7 @@ class DictionaryRepositoryImpl(
         }
     }
 
-    override fun getAllUlchiWords(pageSize: Int, offset: Int): Flow<List<RussianWord>> {
+    override fun getAllUlchiWords(pageSize: Int, offset: Int): Flow<List<Word>> {
         return ulchiDao.getAllWords(pageSize, offset).map { entities ->
             entities.map { entity ->
                 entity.toDomain()
@@ -29,7 +29,7 @@ class DictionaryRepositoryImpl(
         }
     }
     
-    override fun searchRussianWords(query: String, pageSize: Int, offset: Int): Flow<List<RussianWord>> {
+    override fun searchRussianWords(query: String, pageSize: Int, offset: Int): Flow<List<Word>> {
         return russianDao.searchWords(query, pageSize, offset).map { entities ->
             entities.map { entity ->
                 entity.toDomain()
@@ -41,7 +41,7 @@ class DictionaryRepositoryImpl(
         query: String,
         pageSize: Int,
         offset: Int
-    ): Flow<List<RussianWord>> {
+    ): Flow<List<Word>> {
         return ulchiDao.searchWords(query, pageSize, offset).map { entities ->
             entities.map { entity ->
                 entity.toDomain()

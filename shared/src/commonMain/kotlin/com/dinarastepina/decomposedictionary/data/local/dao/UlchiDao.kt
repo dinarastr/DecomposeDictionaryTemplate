@@ -2,7 +2,6 @@ package com.dinarastepina.decomposedictionary.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.dinarastepina.decomposedictionary.data.local.entity.RussianWordEntity
 import com.dinarastepina.decomposedictionary.data.local.entity.UlchiWordEntity
 import kotlinx.coroutines.flow.Flow
 

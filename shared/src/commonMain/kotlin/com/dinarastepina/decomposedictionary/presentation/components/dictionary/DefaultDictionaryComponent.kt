@@ -6,7 +6,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import com.dinarastepina.decomposedictionary.domain.model.RussianWord
+import com.dinarastepina.decomposedictionary.domain.model.Word
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStore
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStoreFactory
 import kotlinx.coroutines.CoroutineScope
@@ -20,23 +20,16 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.decompose.Cancellation
 import com.dinarastepina.decomposedictionary.domain.model.LANGUAGE
 
-/**
- * Default implementation of the DictionaryComponent interface.
- */
 class DefaultDictionaryComponent(
     componentContext: ComponentContext,
     private val storeFactory: DictionaryStoreFactory
 ) : DictionaryComponent, ComponentContext by componentContext {
 
-    // Create the store with paging support
     private val store = storeFactory.create()
 
-    // Map the store state to the component state
     override val state: Value<DictionaryComponent.State> = store.asValue().map { storeState ->
         DictionaryComponent.State(
             query = storeState.query,
-            words = storeState.words,
-            isLoading = storeState.isLoading,
             error = storeState.error,
             isInitialized = storeState.isInitialized,
             targetLanguage = storeState.targetLanguage,
@@ -44,32 +37,26 @@ class DefaultDictionaryComponent(
         )
     }
     
-    // Map the store labels to navigation events
-    override val navigationEvents: Flow<RussianWord> = store.labels.mapNotNull { label ->
+    override val navigationEvents: Flow<Word> = store.labels.mapNotNull { label ->
         when (label) {
             is DictionaryStore.Label.NavigateToWordDetail -> label.word
-            else -> null
         }
     }
 
-    // Expose the paging flow from the store
-    override val wordsPagingFlow: Flow<PagingData<RussianWord>> = store.wordsPagingFlow
+    override val wordsPagingFlow: Flow<PagingData<Word>> = store.wordsPagingFlow
 
-    // Method to search for a word
     override fun search(query: String) {
         store.accept(DictionaryStore.Intent.Search(query))
     }
 
-    // Method to clear the search
     override fun clearSearch() {
         store.accept(DictionaryStore.Intent.ClearSearch)
     }
 
     override fun changeLanguage(language: LANGUAGE) {
-        store.accept(DictionaryStore.Intent.ChangeLanguage)
+        store.accept(DictionaryStore.Intent.UpdateSelectedLanguage(language))
     }
 
-    // Helper extension to convert a Store to a Value
     private fun <T : Any> Store<*, T, *>.asValue(): Value<T> {
         val scope = CoroutineScope(Dispatchers.Main)
         val stateFlow = stateFlow(scope)
@@ -89,7 +76,6 @@ class DefaultDictionaryComponent(
         }
     }
     
-    // Factory implementation
     class Factory(
         private val storeFactory: DictionaryStoreFactory
     ) : DictionaryComponent.Factory {

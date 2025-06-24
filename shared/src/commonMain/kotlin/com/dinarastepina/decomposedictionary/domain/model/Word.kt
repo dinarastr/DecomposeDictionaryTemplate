@@ -3,7 +3,7 @@ package com.dinarastepina.decomposedictionary.domain.model
 /**
  * Domain model representing a word in the dictionary.
  */
-data class RussianWord(
+data class Word(
     val id: String,
     val text: String,
     val grammar: String? = null,

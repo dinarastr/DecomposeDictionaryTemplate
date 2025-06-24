@@ -5,14 +5,10 @@ import com.dinarastepina.decomposedictionary.data.local.entity.Translations
 import com.dinarastepina.decomposedictionary.data.local.entity.UlchiTranslation
 import com.dinarastepina.decomposedictionary.data.local.entity.UlchiWordEntity
 import com.dinarastepina.decomposedictionary.domain.model.Translation
-import com.dinarastepina.decomposedictionary.domain.model.RussianWord
+import com.dinarastepina.decomposedictionary.domain.model.Word
 
-/**
- * Maps WordEntity (database model) to Word (domain model).
- * Preserves semantic separation by creating distinct Translation objects.
- */
-fun RussianWordEntity.toDomain(): RussianWord {
-    return RussianWord(
+fun RussianWordEntity.toDomain(): Word {
+    return Word(
         id = id.toString(),
         text = word,
         translations = translations.mapIndexed { index, translation ->
@@ -21,8 +17,8 @@ fun RussianWordEntity.toDomain(): RussianWord {
     )
 }
 
-fun UlchiWordEntity.toDomain(): RussianWord {
-    return RussianWord(
+fun UlchiWordEntity.toDomain(): Word {
+    return Word(
         id = id.toString(),
         text = word,
         grammar = grammar,
@@ -56,9 +52,6 @@ private fun UlchiTranslation.toDomain(index: Int, hasMultiple: Boolean): Transla
     )
 }
 
-/**
- * Maps Translations entity to Translation domain model.
- */
 private fun Translations.toDomain(index: Int, hasMultiple: Boolean): Translation {
     val definitionText = if (definition.isNotEmpty()) {
         definition.joinToString("; ") { def ->
@@ -91,10 +84,3 @@ private fun Translations.toDomain(index: Int, hasMultiple: Boolean): Translation
         number = if (hasMultiple) text ?: "$index." else null
     )
 }
-
-/**
- * Maps a list of WordEntity to a list of Word.
- */
-fun List<RussianWordEntity>.toDomain(): List<RussianWord> {
-    return map { it.toDomain() }
-} 

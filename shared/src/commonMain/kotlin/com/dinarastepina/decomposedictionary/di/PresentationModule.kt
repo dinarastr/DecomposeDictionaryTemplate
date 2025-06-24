@@ -16,11 +16,9 @@ import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStoreF
 import org.koin.dsl.module
 
 val presentationModule = module {
-    // Store Factory
     single<StoreFactory> { DefaultStoreFactory() }
     
-    // Store Factories
-    factory { DictionaryStoreFactory(get(), get()) }
+    factory { DictionaryStoreFactory(get(), get(), get()) }
     
     factory<DictionaryComponent.Factory> {
         DefaultDictionaryComponent.Factory(get()) 

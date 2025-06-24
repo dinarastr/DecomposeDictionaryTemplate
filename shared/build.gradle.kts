@@ -65,6 +65,8 @@ kotlin {
 
             // Kotlinx Serialization
             implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.androidx.datastore.preferences)
         }
         
         androidMain.dependencies {
