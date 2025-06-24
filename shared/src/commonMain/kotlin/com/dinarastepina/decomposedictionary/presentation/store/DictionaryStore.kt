@@ -126,9 +126,6 @@ class DictionaryStoreFactory(
         data object SubscribeToLanguageUpdates : Action()
     }
 
-    /**
-     * Messages that can be sent to the reducer.
-     */
     private sealed class Message {
         data class QueryChanged(val query: String) : Message()
         data class ErrorOccurred(val error: String) : Message()
@@ -144,9 +141,6 @@ class DictionaryStoreFactory(
         }
     }
 
-    /**
-     * Executor that handles business logic.
-     */
     private inner class ExecutorImpl :
         CoroutineExecutor<DictionaryStore.Intent, Action, DictionaryStore.State, Message, DictionaryStore.Label>() {
 

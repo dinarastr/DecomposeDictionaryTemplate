@@ -17,15 +17,19 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.dinarastepina.decomposedictionary.presentation.components.main.MainComponent
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsComponent
+import com.dinarastepina.decomposedictionary.presentation.components.texts.TextsComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 import com.dinarastepina.decomposedictionary.presentation.ui.dictionary.DictionaryScreen
 import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.phrases.PhrasesScreen
 import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.search.SearchScreen
 import com.dinarastepina.decomposedictionary.presentation.ui.phrasebook.topics.TopicsListScreen
+import com.dinarastepina.decomposedictionary.presentation.ui.texts.TextDetailsScreen
+import com.dinarastepina.decomposedictionary.presentation.ui.texts.TextsListScreen
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_dictionary
 import decomposedictionary.shared.generated.resources.ic_list
-import decomposedictionary.shared.generated.resources.ic_school
+import decomposedictionary.shared.generated.resources.ic_communication
+import decomposedictionary.shared.generated.resources.ic_info
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -46,7 +50,7 @@ fun MainScreen(component: MainComponent) {
                 when (child) {
                     is MainComponent.Child.Dictionary -> DictionaryScreen(child.component)
                     is MainComponent.Child.Topics -> TopicsScreen(child.component)
-                    is MainComponent.Child.Texts -> Text("")
+                    is MainComponent.Child.Texts -> TextsScreen(child.component)
                 }
             }
         }
@@ -79,12 +83,21 @@ private fun BottomNavigationBar(
         
         NavigationBarItem(
             icon = { Icon(
-                painter = painterResource(Res.drawable.ic_school),
+                painter = painterResource(Res.drawable.ic_communication),
                 contentDescription = "Lessons") },
-            label = { Text("Lessons") },
+            label = { Text("Texts") },
             selected = activeTab is TabConfig.Texts,
             onClick = { onTabSelected(TabConfig.Texts.List) }
         )
+        NavigationBarItem(
+            icon = { Icon(
+                painter = painterResource(Res.drawable.ic_info),
+                contentDescription = "Lessons") },
+            label = { Text("Info") },
+            selected = activeTab is TabConfig.Texts,
+            onClick = { onTabSelected(TabConfig.Texts.List) }
+        )
+
     }
 }
 
@@ -98,6 +111,19 @@ private fun TopicsScreen(component: TopicsComponent) {
             is TopicsComponent.Child.List -> TopicsListScreen(instance.component)
             is TopicsComponent.Child.Details -> PhrasesScreen(instance.component)
             is TopicsComponent.Child.Search -> SearchScreen(instance.component)
+        }
+    }
+}
+
+@Composable
+private fun TextsScreen(component: TextsComponent) {
+    Children(
+        stack = component.stack,
+        animation = stackAnimation(fade()),
+    ) { child ->
+        when (val instance = child.instance) {
+            is TextsComponent.Child.List -> TextsListScreen(instance.component)
+            is TextsComponent.Child.Details -> TextDetailsScreen(instance.component)
         }
     }
 }

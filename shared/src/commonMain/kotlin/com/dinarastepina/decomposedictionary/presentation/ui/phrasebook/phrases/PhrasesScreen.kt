@@ -22,6 +22,7 @@ import com.dinarastepina.decomposedictionary.presentation.ui.kit.AudioState
 import com.dinarastepina.decomposedictionary.presentation.ui.kit.PhraseCard
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_arrow
+import decomposedictionary.shared.generated.resources.ic_back
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +42,7 @@ fun PhrasesScreen(
                 navigationIcon = {
                     IconButton(onClick = component::onBackClick) {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_arrow),
+                            painter = painterResource(Res.drawable.ic_back),
                             contentDescription = "Back"
                         )
                     }

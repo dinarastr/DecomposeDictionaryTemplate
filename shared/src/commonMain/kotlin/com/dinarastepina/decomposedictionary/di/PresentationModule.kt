@@ -16,9 +16,17 @@ import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsListComponent
 import com.dinarastepina.decomposedictionary.presentation.components.root.DefaultRootComponent
 import com.dinarastepina.decomposedictionary.presentation.components.root.RootComponent
+import com.dinarastepina.decomposedictionary.presentation.components.texts.DefaultTextDetailsComponent
+import com.dinarastepina.decomposedictionary.presentation.components.texts.DefaultTextsComponent
+import com.dinarastepina.decomposedictionary.presentation.components.texts.DefaultTextsListComponent
+import com.dinarastepina.decomposedictionary.presentation.components.texts.TextDetailsComponent
+import com.dinarastepina.decomposedictionary.presentation.components.texts.TextsComponent
+import com.dinarastepina.decomposedictionary.presentation.components.texts.TextsListComponent
 import com.dinarastepina.decomposedictionary.presentation.store.DictionaryStoreFactory
 import com.dinarastepina.decomposedictionary.presentation.store.PhrasesStoreFactory
 import com.dinarastepina.decomposedictionary.presentation.store.SearchStoreFactory
+import com.dinarastepina.decomposedictionary.presentation.store.TextDetailsStoreFactory
+import com.dinarastepina.decomposedictionary.presentation.store.TextsListStoreFactory
 import com.dinarastepina.decomposedictionary.presentation.store.TopicsStoreFactory
 import org.koin.dsl.module
 
@@ -29,6 +37,8 @@ val presentationModule = module {
     factory { TopicsStoreFactory(get(), get()) }
     factory { PhrasesStoreFactory(get(), get(), get()) }
     factory { SearchStoreFactory(get(), get(), get()) }
+    factory { TextsListStoreFactory(get(), get()) }
+    factory { TextDetailsStoreFactory(get(), get()) }
     
     factory<DictionaryComponent.Factory> {
         DefaultDictionaryComponent.Factory(get())
@@ -77,10 +87,42 @@ val presentationModule = module {
         }
     }
     
+    factory<TextsComponent.Factory> {
+        TextsComponent.Factory { componentContext ->
+            DefaultTextsComponent(
+                componentContext = componentContext,
+                textsListComponentFactory = get(),
+                textDetailsComponentFactory = get()
+            )
+        }
+    }
+    
+    factory<TextsListComponent.Factory> {
+        TextsListComponent.Factory { componentContext, onTextSelected ->
+            DefaultTextsListComponent(
+                componentContext = componentContext,
+                textsListStoreFactory = get(),
+                onTextSelected = onTextSelected
+            )
+        }
+    }
+    
+    factory<TextDetailsComponent.Factory> {
+        TextDetailsComponent.Factory { componentContext, text, onNavigateBack ->
+            DefaultTextDetailsComponent(
+                componentContext = componentContext,
+                textDetailsStoreFactory = get(),
+                text = text,
+                onNavigateBack = onNavigateBack
+            )
+        }
+    }
+    
     factory<MainComponent.Factory> {
         DefaultMainComponent.Factory(
             dictionaryComponentFactory = get(),
-            topicsComponentFactory = get()
+            topicsComponentFactory = get(),
+            textsComponentFactory = get()
         )
     }
     

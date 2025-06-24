@@ -32,6 +32,9 @@ sealed class TabConfig {
         data object List : Texts()
 
         @Serializable
-        data class Details(val textId: String) : Texts()
+        data class Details(val text: com.dinarastepina.decomposedictionary.domain.model.Text) : Texts()
     }
+
+    @Serializable
+    data object Info : TabConfig()
 }

@@ -28,8 +28,10 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.search.SearchComponent
 import com.dinarastepina.decomposedictionary.presentation.ui.kit.AudioState
 import com.dinarastepina.decomposedictionary.presentation.ui.kit.PhraseCard
+import com.dinarastepina.decomposedictionary.utils.hideKeyboardOnTap
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_arrow
+import decomposedictionary.shared.generated.resources.ic_back
 import decomposedictionary.shared.generated.resources.ic_clear
 import org.jetbrains.compose.resources.painterResource
 
@@ -54,7 +56,7 @@ fun SearchScreen(
                 navigationIcon = {
                     IconButton(onClick = component::onBackClick) {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_arrow),
+                            painter = painterResource(Res.drawable.ic_back),
                             contentDescription = "Back",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
@@ -96,7 +98,7 @@ fun SearchScreen(
             // Error handling
             if (state.error != null) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -120,7 +122,7 @@ fun SearchScreen(
             } else {
                 // Phrases list with paging
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
                     contentPadding = PaddingValues(vertical = 8.dp)
                 ) {
                     items(

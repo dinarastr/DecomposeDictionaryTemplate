@@ -9,12 +9,14 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.topics.TopicsComponent
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
+import com.dinarastepina.decomposedictionary.presentation.components.texts.TextsComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
 
 class DefaultMainComponent(
     componentContext: ComponentContext,
     private val dictionaryComponentFactory: DictionaryComponent.Factory,
     private val topicsComponentFactory: TopicsComponent.Factory,
+    private val textsComponentFactory: TextsComponent.Factory,
 ) : MainComponent, ComponentContext by componentContext {
     
     private val navigation = SlotNavigation<TabConfig>()
@@ -45,19 +47,24 @@ class DefaultMainComponent(
                 component = topicsComponentFactory(context)
             )
             is TabConfig.Texts -> MainComponent.Child.Texts(
-                component = topicsComponentFactory(context)
+                component = textsComponentFactory(context)
+            )
+            is TabConfig.Info -> MainComponent.Child.Texts(
+                component = textsComponentFactory(context)
             )
         }
     
     class Factory(
         private val dictionaryComponentFactory: DictionaryComponent.Factory,
         private val topicsComponentFactory: TopicsComponent.Factory,
+        private val textsComponentFactory: TextsComponent.Factory,
     ) : MainComponent.Factory {
         override fun invoke(componentContext: ComponentContext): MainComponent =
             DefaultMainComponent(
                 componentContext = componentContext,
                 dictionaryComponentFactory = dictionaryComponentFactory,
-                topicsComponentFactory = topicsComponentFactory
+                topicsComponentFactory = topicsComponentFactory,
+                textsComponentFactory = textsComponentFactory
             )
     }
 }
