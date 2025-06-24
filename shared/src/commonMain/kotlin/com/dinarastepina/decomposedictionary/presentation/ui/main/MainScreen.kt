@@ -96,7 +96,7 @@ private fun TopicsScreen(component: TopicsComponent) {
         when (val instance = child.instance) {
             is TopicsComponent.Child.List -> TopicsListScreen(instance.component)
             is TopicsComponent.Child.Details -> PhrasesScreen(instance.component)
-            is TopicsComponent.Child.Search -> Text("")
+            is TopicsComponent.Child.Search -> Text("Search")
         }
     }
 }

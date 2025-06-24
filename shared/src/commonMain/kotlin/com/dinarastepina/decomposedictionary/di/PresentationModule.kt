@@ -21,13 +21,11 @@ import com.dinarastepina.decomposedictionary.presentation.store.TopicsStoreFacto
 import org.koin.dsl.module
 
 val presentationModule = module {
-    // Core dependencies
     single<StoreFactory> { DefaultStoreFactory() }
     
     factory { DictionaryStoreFactory(get(), get(), get()) }
     factory { TopicsStoreFactory(get(), get()) }
     
-    // Component factories using simplified approach
     factory<DictionaryComponent.Factory> {
         DefaultDictionaryComponent.Factory(get())
     }
@@ -43,13 +41,13 @@ val presentationModule = module {
         }
     }
     
-    // Individual component factories for internal use
     factory<TopicsListComponent.Factory> {
-        TopicsListComponent.Factory { componentContext, onTopicSelected ->
+        TopicsListComponent.Factory { componentContext, onTopicSelected, onSearchBarClicked ->
             DefaultTopicsListComponent(
                 componentContext = componentContext,
                 topicsStoreFactory = get(),
-                onTopicSelected = onTopicSelected
+                onTopicSelected = onTopicSelected,
+                onSearchBarClicked = onSearchBarClicked
             )
         }
     }

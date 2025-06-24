@@ -19,7 +19,8 @@ import kotlinx.coroutines.flow.onEach
 class DefaultTopicsListComponent(
     componentContext: ComponentContext,
     private val topicsStoreFactory: TopicsStoreFactory,
-    private val onTopicSelected: (String) -> Unit
+    private val onTopicSelected: (String) -> Unit,
+    private val onSearchBarClicked: () -> Unit
 ) : TopicsListComponent, ComponentContext by componentContext {
     
     private val store = topicsStoreFactory.create()

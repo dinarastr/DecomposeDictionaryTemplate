@@ -18,7 +18,8 @@ interface TopicsListComponent {
     fun interface Factory {
         operator fun invoke(
             componentContext: ComponentContext, 
-            onTopicSelected: (String) -> Unit
+            onTopicSelected: (String) -> Unit,
+            onSearchBarClicked: () -> Unit
         ): TopicsListComponent
     }
 }

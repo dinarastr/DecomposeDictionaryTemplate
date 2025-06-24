@@ -7,7 +7,6 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.phrases.PhrasesComponent
 import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.search.SearchComponent
 import com.dinarastepina.decomposedictionary.presentation.navigation.TabConfig
@@ -33,7 +32,11 @@ class DefaultTopicsComponent(
     private fun createChild(config: TabConfig.Topics, context: ComponentContext): TopicsComponent.Child =
         when (config) {
             is TabConfig.Topics.List -> TopicsComponent.Child.List(
-                component = topicsListComponentFactory(context, ::navigateToPhrases)
+                component = topicsListComponentFactory(
+                    context,
+                    ::navigateToPhrases,
+                    ::navigateToSearch
+                )
             )
             is TabConfig.Topics.Details -> TopicsComponent.Child.Details(
                 component = phrasesComponentFactory(context, config.topicId)
