@@ -7,12 +7,29 @@ import com.dinarastepina.decomposedictionary.domain.model.Topic
 import com.dinarastepina.decomposedictionary.domain.repository.PhraseBookRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class PhraseBookRepositoryImpl(
     private val phraseBookDao: PhraseBookDao
 ): PhraseBookRepository {
+    
+    // Memory cache for topics to avoid repeated database queries
+    private var cachedTopics: List<Topic>? = null
+    private val topicsCacheMutex = Mutex()
+    
     override suspend fun getTopics(): List<Topic> {
-        return phraseBookDao.getAllTopics().map { it.toDomain() }
+        return topicsCacheMutex.withLock {
+            cachedTopics?.let { topics ->
+                // Return cached topics if available
+                topics
+            } ?: run {
+                // Load from database and cache
+                val topicsFromDb = phraseBookDao.getAllTopics().map { it.toDomain() }
+                cachedTopics = topicsFromDb
+                topicsFromDb
+            }
+        }
     }
 
     override suspend fun getPhrasesByTopic(topicId: Int): List<Phrase> {

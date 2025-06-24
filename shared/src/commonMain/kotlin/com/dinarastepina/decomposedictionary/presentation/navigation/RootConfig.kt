@@ -2,6 +2,7 @@ package com.dinarastepina.decomposedictionary.presentation.navigation
 
 import com.dinarastepina.decomposedictionary.domain.model.Topic
 import kotlinx.serialization.Serializable
+import com.dinarastepina.decomposedictionary.domain.model.Text
 
 @Serializable
 sealed class RootConfig {
@@ -32,7 +33,7 @@ sealed class TabConfig {
         data object List : Texts()
 
         @Serializable
-        data class Details(val text: com.dinarastepina.decomposedictionary.domain.model.Text) : Texts()
+        data class Details(val text: Text) : Texts()
     }
 
     @Serializable

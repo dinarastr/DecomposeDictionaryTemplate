@@ -55,7 +55,6 @@ class TextDetailsStoreFactory(
         data class SentencesLoaded(val sentencePairs: List<SentencePair>) : Message()
         data class ErrorOccurred(val error: String) : Message()
         
-        // Audio messages
         data object AudioStarted : Message()
         data object AudioPaused : Message()
         data object AudioStopped : Message()

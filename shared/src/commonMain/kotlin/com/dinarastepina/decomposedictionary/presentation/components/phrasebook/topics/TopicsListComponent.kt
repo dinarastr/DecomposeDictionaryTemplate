@@ -10,6 +10,7 @@ interface TopicsListComponent {
 
     data class State(
         val topics: List<Topic> = emptyList(),
+        val isLoading: Boolean = false,
         val error: String? = null
     )
 

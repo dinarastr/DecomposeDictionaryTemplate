@@ -29,6 +29,7 @@ class DefaultTopicsListComponent(
     override val state: Value<TopicsListComponent.State> = store.asValue().map { storeState ->
         TopicsListComponent.State(
             topics = storeState.topics,
+            isLoading = storeState.isLoading,
             error = storeState.error
         )
     }
@@ -49,7 +50,8 @@ class DefaultTopicsListComponent(
     }
     
     override fun onTopicSelected(topicId: Int, topicName: String) {
-        val topic = state.value.topics.find { it.id == topicId }
+        val topics = state.value.topics
+        val topic = topics.find { it.id == topicId }
         if (topic != null) {
             store.accept(TopicsStore.Intent.SelectTopic(topic))
         }
