@@ -62,12 +62,8 @@ fun TextsListScreen(
                 title = {
                     Text(
                         text = stringResource(Res.string.texts_title),
-                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
             )
         }
     ) { paddingValues ->
@@ -172,7 +168,7 @@ private fun TextCard(
                 text = stringResource(Res.string.text_card_title, text.id),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primaryContainer
             )
 
             Text(

@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,6 +73,10 @@ private fun BottomNavigationBar(
 ) {
     NavigationBar {
         NavigationBarItem(
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedIconColor = MaterialTheme.colorScheme.onSecondary
+            ),
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_dictionary),
                 contentDescription = stringResource(Res.string.tab_dictionary)) },
@@ -80,6 +86,10 @@ private fun BottomNavigationBar(
         )
         
         NavigationBarItem(
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedIconColor = MaterialTheme.colorScheme.onSecondary
+            ),
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_list),
                 contentDescription = stringResource(Res.string.tab_phrases)) },
@@ -89,6 +99,10 @@ private fun BottomNavigationBar(
         )
         
         NavigationBarItem(
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedIconColor = MaterialTheme.colorScheme.onSecondary
+            ),
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_communication),
                 contentDescription = stringResource(Res.string.tab_texts)) },
@@ -98,6 +112,10 @@ private fun BottomNavigationBar(
         )
         
         NavigationBarItem(
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedIconColor = MaterialTheme.colorScheme.onSecondary
+            ),
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_info),
                 contentDescription = stringResource(Res.string.tab_info)) },

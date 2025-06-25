@@ -36,9 +36,6 @@ fun PhrasesScreen(
         containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
                 title = {
                     Text(state.topic.ulchi)
                 },

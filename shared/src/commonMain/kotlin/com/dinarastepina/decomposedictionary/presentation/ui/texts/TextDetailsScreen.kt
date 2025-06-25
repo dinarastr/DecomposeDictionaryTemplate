@@ -58,7 +58,6 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                 title = {
                     Text(
                         text = stringResource(Res.string.text_details_title, state.text.id),
-                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
                 navigationIcon = {
@@ -66,13 +65,9 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_back),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                }
             )
         },
         bottomBar = {
@@ -103,7 +98,7 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                                 else Res.drawable.ic_play
                             ),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                 }

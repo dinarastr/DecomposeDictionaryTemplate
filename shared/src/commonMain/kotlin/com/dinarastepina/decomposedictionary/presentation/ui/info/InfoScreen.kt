@@ -48,12 +48,8 @@ fun InfoScreen(component: InfoComponent) {
                 title = {
                     Text(
                         stringResource(Res.string.app_title),
-                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
             )
         }
     ) { paddingValues ->

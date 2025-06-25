@@ -15,12 +15,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -56,7 +58,6 @@ fun SearchScreen(
                 title = {
                     Text(
                         text = stringResource(Res.string.search_phrase),
-                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
                 navigationIcon = {
@@ -64,13 +65,9 @@ fun SearchScreen(
                         Icon(
                             painter = painterResource(Res.drawable.ic_back),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                }
             )
         }
     ) { paddingValues ->
@@ -80,6 +77,12 @@ fun SearchScreen(
                 .padding(paddingValues)
         ) {
             OutlinedTextField(
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    cursorColor = MaterialTheme.colorScheme.primaryContainer,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
                 value = state.query,
                 onValueChange = component::onSearchQuery,
                 placeholder = {
