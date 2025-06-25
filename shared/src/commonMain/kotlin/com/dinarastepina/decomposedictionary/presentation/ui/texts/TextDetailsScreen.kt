@@ -29,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -39,7 +38,6 @@ import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_back
 import decomposedictionary.shared.generated.resources.ic_pause
 import decomposedictionary.shared.generated.resources.ic_play
-import decomposedictionary.shared.generated.resources.ic_play_pause
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +51,7 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Text #${state.text.id}",
+                        text = "Текст #${state.text.id}",
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
@@ -61,7 +59,7 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                     IconButton(onClick = component::onBackClick) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_back),
-                            contentDescription = "Back",
+                            contentDescription = "Назад",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -72,7 +70,6 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
             )
         },
         bottomBar = {
-            // Sticky bottom bar with audio controls
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.surface,
                 contentColor = MaterialTheme.colorScheme.onSurface,
@@ -84,7 +81,7 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Listen to Text",
+                        text = "Прослушайте текст",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f).padding(start = 16.dp)
@@ -108,7 +105,7 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                             } else {
                                 painterResource(Res.drawable.ic_play)
                             },
-                            contentDescription = if (state.isPlaying) "Pause" else "Play"
+                            contentDescription = if (state.isPlaying) "Пауза" else "Начать"
                         )
                     }
                 }
@@ -131,7 +128,7 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Error Loading Text",
+                                text = "Ошибка загрузки текста",
                                 style = MaterialTheme.typography.headlineSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.Center
@@ -193,16 +190,6 @@ private fun SentencePairCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Sentence number header
-            Text(
-                text = "Sentence ${sentencePair.index + 1}",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            // Ulchi sentence
             Text(
                 text = sentencePair.ulchi,
                 style = MaterialTheme.typography.bodyLarge,
@@ -210,7 +197,6 @@ private fun SentencePairCard(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Russian translation
             Text(
                 text = sentencePair.russian,
                 style = MaterialTheme.typography.bodyMedium,

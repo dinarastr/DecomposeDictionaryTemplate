@@ -45,7 +45,7 @@ fun TopicsListScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Topics",
+                        text = "Разговорник",
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
@@ -53,7 +53,7 @@ fun TopicsListScreen(
                     IconButton(onClick = component::onSearchClicked) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_search),
-                            contentDescription = "Search phrases",
+                            contentDescription = "Поиск по фразам",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -91,7 +91,7 @@ fun TopicsListScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
-                            text = "Error loading topics",
+                            text = "Ошибка при загрузке фраз",
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center
@@ -116,7 +116,6 @@ fun TopicsListScreen(
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    // Use stable keys and content types for better performance
                     items(
                         items = state.topics,
                         key = { topic -> topic.id },

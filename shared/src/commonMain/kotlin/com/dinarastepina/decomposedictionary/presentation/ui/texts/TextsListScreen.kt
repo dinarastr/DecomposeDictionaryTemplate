@@ -46,7 +46,7 @@ fun TextsListScreen(component: TextsListComponent) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Texts",
+                        text = "Тексты",
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
@@ -83,7 +83,7 @@ fun TextsListScreen(component: TextsListComponent) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Error Loading Texts",
+                                text = "Ошибка при загрузке текстов",
                                 style = MaterialTheme.typography.headlineSmall,
                                 color = MaterialTheme.colorScheme.error,
                                 textAlign = TextAlign.Center
@@ -105,7 +105,7 @@ fun TextsListScreen(component: TextsListComponent) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No texts available",
+                            text = "Текстов не найдено :0(",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -153,16 +153,14 @@ private fun TextItem(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Text ID/Title
             Text(
-                text = "Text #${text.id}",
+                text = "Текст #${text.id}",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Ulchi text preview (first 2 lines)
             Text(
                 text = text.ulchi,
                 style = MaterialTheme.typography.bodyMedium,
@@ -172,7 +170,6 @@ private fun TextItem(
                 modifier = Modifier.padding(bottom = 4.dp)
             )
 
-            // Russian text preview (first 2 lines)
             Text(
                 text = text.russian,
                 style = MaterialTheme.typography.bodySmall,

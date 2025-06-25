@@ -49,7 +49,7 @@ fun SearchScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Search Phrases",
+                        text = "Найдите фразу по слову",
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
@@ -57,7 +57,7 @@ fun SearchScreen(
                     IconButton(onClick = component::onBackClick) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_back),
-                            contentDescription = "Back",
+                            contentDescription = "Назад",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -73,18 +73,17 @@ fun SearchScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Search TextField
             OutlinedTextField(
                 value = state.query,
                 onValueChange = component::onSearchQuery,
-                label = { Text("Search phrases...") },
-                placeholder = { Text("Enter Ulchi or Russian text") },
+                label = { Text("Поиск...") },
+                placeholder = { Text("Введите текст на ульчском или русском") },
                 trailingIcon = {
                     if (state.query.isNotEmpty()) {
                         IconButton(onClick = component::onClearSearch) {
                             Icon(
                                 painter = painterResource(Res.drawable.ic_clear),
-                                contentDescription = "Clear search"
+                                contentDescription = "Очистить поиск"
                             )
                         }
                     }
@@ -95,7 +94,6 @@ fun SearchScreen(
                 singleLine = true
             )
 
-            // Error handling
             if (state.error != null) {
                 Box(
                     modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
@@ -105,7 +103,7 @@ fun SearchScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Search Error",
+                            text = "Ошибка поиска",
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.Center
@@ -120,7 +118,6 @@ fun SearchScreen(
                     }
                 }
             } else {
-                // Phrases list with paging
                 LazyColumn(
                     modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
                     contentPadding = PaddingValues(vertical = 8.dp)

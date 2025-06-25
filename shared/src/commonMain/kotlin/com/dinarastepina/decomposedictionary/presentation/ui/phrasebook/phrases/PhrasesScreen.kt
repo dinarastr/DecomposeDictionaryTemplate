@@ -21,7 +21,6 @@ import com.dinarastepina.decomposedictionary.presentation.components.phrasebook.
 import com.dinarastepina.decomposedictionary.presentation.ui.kit.AudioState
 import com.dinarastepina.decomposedictionary.presentation.ui.kit.PhraseCard
 import decomposedictionary.shared.generated.resources.Res
-import decomposedictionary.shared.generated.resources.ic_arrow
 import decomposedictionary.shared.generated.resources.ic_back
 import org.jetbrains.compose.resources.painterResource
 
