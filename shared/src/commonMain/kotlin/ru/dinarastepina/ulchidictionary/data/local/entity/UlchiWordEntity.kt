@@ -1,0 +1,34 @@
+package ru.dinarastepina.ulchidictionary.data.local.entity
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import ru.dinarastepina.ulchidictionary.data.local.serializer.ExampleListSerializer
+import ru.dinarastepina.ulchidictionary.data.local.serializer.UlchiDefinitionListSerializer
+import ru.dinarastepina.ulchidictionary.data.local.serializer.UlchiTranslationsListSerializer
+import kotlinx.serialization.Serializable
+
+@Entity(tableName = "ulchi_russian")
+data class UlchiWordEntity(
+    @PrimaryKey
+    val id: Int = 0,
+    val word: String,
+    val grammar: String? = null,
+    @Serializable(with = UlchiTranslationsListSerializer::class)
+    val translations: List<UlchiTranslation>
+)
+
+@Serializable
+data class UlchiTranslation(
+    @Serializable(with = UlchiDefinitionListSerializer::class)
+    val definition: List<UlchiDefinition> = emptyList(),
+    @Serializable(with = ExampleListSerializer::class)
+    val examples: List<Example> = emptyList(),
+    val text: String? = null
+)
+
+
+@Serializable
+data class UlchiDefinition(
+    val com: String? = null,
+    val text: String,
+)

@@ -5,14 +5,14 @@ plugins {
 }
 
 android {
-    namespace = "com.dinarastepina.decomposedictionary.android"
+    namespace = "ru.dinarastepina.ulchidictionary"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.dinarastepina.decomposedictionary.android"
-        minSdk = 28
+        applicationId = "ru.dinarastepina.ulchidictionary"
+        minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "2.1"
     }
     buildFeatures {
         compose = true
@@ -24,7 +24,7 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
         }
     }
     compileOptions {

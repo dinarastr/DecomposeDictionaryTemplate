@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.App.Starting">
         <activity
-            android:name=".MainActivity"
+            android:name="ru.dinarastepina.ulchidictionary.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
