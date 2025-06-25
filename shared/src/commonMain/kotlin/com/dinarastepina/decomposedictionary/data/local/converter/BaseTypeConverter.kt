@@ -36,6 +36,7 @@ abstract class BaseTypeConverter<T> {
             }
         } catch (e: Exception) {
             println("Error parsing translations: ${e.message}")
+            println("JSON input: $translationsJson")
             emptyList()
         }
     }

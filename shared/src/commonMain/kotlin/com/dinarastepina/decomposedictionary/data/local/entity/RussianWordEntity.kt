@@ -6,6 +6,7 @@ import com.dinarastepina.decomposedictionary.data.local.serializer.AcronymListSe
 import com.dinarastepina.decomposedictionary.data.local.serializer.DefinitionListSerializer
 import com.dinarastepina.decomposedictionary.data.local.serializer.ExampleListSerializer
 import com.dinarastepina.decomposedictionary.data.local.serializer.ExampleTranslationSerializer
+import com.dinarastepina.decomposedictionary.data.local.serializer.GrammarSerializer
 import com.dinarastepina.decomposedictionary.data.local.serializer.TranslationsListSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -28,6 +29,7 @@ data class Translations(
     val definition: List<Definition> = emptyList(),
     @Serializable(with = ExampleListSerializer::class)
     val example: List<Example> = emptyList(),
+    @Serializable(with = GrammarSerializer::class)
     val grammar: Grammar? = null,
     val text: String? = null,
     val com: String? = null

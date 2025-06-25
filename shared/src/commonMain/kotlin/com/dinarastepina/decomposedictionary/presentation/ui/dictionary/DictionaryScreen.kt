@@ -55,7 +55,6 @@ fun DictionaryScreen(component: DictionaryComponent) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DictionaryContent(
     currentLanguage: LANGUAGE,
@@ -67,28 +66,11 @@ private fun DictionaryContent(
     words: LazyPagingItems<Word>,
     error: String?
 ) {
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.primary,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(Res.string.tab_dictionary),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .hideKeyboardOnTap()
-        ) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .hideKeyboardOnTap()
+    ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -199,7 +181,6 @@ private fun DictionaryContent(
             }
         }
     }
-}
 
 @Composable
 private fun SearchBar(
