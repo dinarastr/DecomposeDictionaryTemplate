@@ -1,12 +1,15 @@
 package com.dinarastepina.decomposedictionary.presentation.ui.dictionary
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -70,12 +73,16 @@ private fun DictionaryContent(
         modifier = Modifier
             .fillMaxSize()
             .hideKeyboardOnTap()
+            .background(
+                color = MaterialTheme.colorScheme.primary
+            )
     ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
+
             ) {
                 SearchBar(
                     query = searchQuery,
@@ -83,6 +90,7 @@ private fun DictionaryContent(
                     onClearClick = onClearSearch,
                     modifier = Modifier.fillMaxWidth()
                 )
+                Spacer(modifier = Modifier.height(16.dp))
 
                 LanguageSettingsButton(
                     languageOne = currentLanguage,
@@ -151,7 +159,6 @@ private fun DictionaryContent(
                                 Text(
                                     text = stringResource(Res.string.no_words_found, searchQuery),
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onPrimary,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.padding(32.dp)
                                 )
@@ -170,7 +177,6 @@ private fun DictionaryContent(
                                 Text(
                                     text = stringResource(Res.string.dictionary_search_placeholder),
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onPrimary,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.padding(32.dp)
                                 )
@@ -190,6 +196,12 @@ private fun SearchBar(
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            cursorColor = MaterialTheme.colorScheme.primaryContainer,
+            unfocusedIndicatorColor = Color.Transparent,
+        ),
         value = query,
         onValueChange = onQueryChange,
         modifier = modifier,
@@ -199,7 +211,8 @@ private fun SearchBar(
         leadingIcon = {
             Icon(
                 painter = painterResource(Res.drawable.ic_search),
-                contentDescription = stringResource(Res.string.search_icon_description)
+                contentDescription = stringResource(Res.string.search_icon_description),
+                tint = MaterialTheme.colorScheme.primaryContainer
             )
         },
         trailingIcon = {
@@ -227,6 +240,7 @@ private fun WordItem(
 ) {
     Card(
         modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,

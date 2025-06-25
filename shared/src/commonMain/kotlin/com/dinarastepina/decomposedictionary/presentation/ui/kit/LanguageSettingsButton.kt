@@ -27,7 +27,7 @@ fun LanguageSettingsButton(
 ) {
     val brush = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF00696C),
+            Color(0xFF0ABAB5),
             Color(0xffABA5A5)
         )
     )
