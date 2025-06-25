@@ -4,7 +4,7 @@
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation
         duration. -->
-        <item name="windowSplashScreenBackground">#56DFCF</item>
+        <item name="windowSplashScreenBackground">#335851</item>
         <item name="android:windowSplashScreenBrandingImage">@drawable/branding</item>
 
         <!-- Use windowSplashScreenAnimatedIcon to add a drawable or an animated
