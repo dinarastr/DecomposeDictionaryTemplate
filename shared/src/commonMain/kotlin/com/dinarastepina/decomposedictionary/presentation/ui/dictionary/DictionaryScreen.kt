@@ -291,7 +291,7 @@ private fun TranslationItem(
             Spacer(modifier = Modifier.height(4.dp))
             translation.examples.take(2).forEach { example ->
                 Text(
-                    text = stringResource(Res.string.word_example_format, example),
+                    text = "• $example",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 8.dp, top = 1.dp)

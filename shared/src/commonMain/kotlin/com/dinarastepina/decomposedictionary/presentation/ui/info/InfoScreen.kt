@@ -47,7 +47,7 @@ fun InfoScreen(component: InfoComponent) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "About App",
+                        stringResource(Res.string.app_title),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
@@ -71,16 +71,6 @@ fun InfoScreen(component: InfoComponent) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // Header
-                Text(
-                    text = stringResource(Res.string.about_app_title),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
-                
-                // App Logo
                 Card(
                     modifier = Modifier.size(200.dp),
                     shape = RoundedCornerShape(16.dp),
@@ -100,17 +90,6 @@ fun InfoScreen(component: InfoComponent) {
                         )
                     }
                 }
-                
-                // App Title
-                Text(
-                    text = stringResource(Res.string.app_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                
-                // About App Content
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)

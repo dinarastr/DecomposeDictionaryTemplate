@@ -1,10 +1,10 @@
 package com.dinarastepina.decomposedictionary.presentation.ui.ui
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0x803EA6DD)
+val primaryLight = Color(0x8000696C)
 val onPrimaryLight = Color(0xFFFFFFFF)
-val primaryContainerLight = Color(0xFF3EA6DD)
-val onPrimaryContainerLight = Color(0xFF284777)
+val primaryContainerLight = Color(0xFF00696C)
+val onPrimaryContainerLight = Color(0xFF003738)
 val secondaryLight = Color(0xFF00696C)
 val onSecondaryLight = Color(0xFFFFFFFF)
 val secondaryContainerLight = Color(0x1a3EA6DD)
@@ -38,8 +38,8 @@ val surfaceContainerHighLight = Color(0xFFE7E8EE)
 val surfaceContainerHighestLight = Color(0xFFE2E2E9)
 
 val primaryDark = Color(0xFF0C0E13)
-val onPrimaryDark = Color(0xFF0B305F)
-val primaryContainerDark = Color(0xFF3EA6DD)
+val onPrimaryDark = Color(0xFF003738)
+val primaryContainerDark = Color(0xFF00696C)
 val onPrimaryContainerDark = Color(0xFFD7E3FF)
 val secondaryDark = Color(0xFF80D4D7)
 val onSecondaryDark = Color(0xFF003738)
