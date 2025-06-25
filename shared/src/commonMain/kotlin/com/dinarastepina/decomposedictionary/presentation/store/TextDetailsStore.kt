@@ -112,11 +112,9 @@ class TextDetailsStoreFactory(
         }
 
         private fun splitTextIntoSentences(text: Text): List<SentencePair> {
-            // Split text by common sentence endings for both languages
-            val ulchiSentences = text.ulchi.split(Regex("[.!?]+")).map { it.trim() }.filter { it.isNotEmpty() }
-            val russianSentences = text.russian.split(Regex("[.!?]+")).map { it.trim() }.filter { it.isNotEmpty() }
+            val ulchiSentences = text.ulchi.split(Regex("(?<=[.!?])\\s+")).map { it.trim() }.filter { it.isNotEmpty() }
+            val russianSentences = text.russian.split(Regex("(?<=[.!?])\\s+")).map { it.trim() }.filter { it.isNotEmpty() }
             
-            // Zip sentences together, taking the minimum count to avoid index out of bounds
             val minCount = minOf(ulchiSentences.size, russianSentences.size)
             
             return (0 until minCount).map { index ->
@@ -134,26 +132,22 @@ class TextDetailsStoreFactory(
                     val currentState = state()
                     val text = currentState.text
                     
-                    // If the same text is playing, pause it
                     if (currentState.currentlyPlayingText?.id == text.id && currentState.isPlaying) {
                         pauseAudio()
                         return@launch
                     }
                     
-                    // If the same text is paused, resume it
                     if (currentState.currentlyPlayingText?.id == text.id && !currentState.isPlaying) {
                         playlistManager.playCurrentTrack()
                         dispatch(Message.AudioStarted(text))
                         return@launch
                     }
                     
-                    // Check if audio field is empty
                     if (text.audio.isBlank()) {
                         dispatch(Message.ErrorOccurred("No audio file available for this text"))
                         return@launch
                     }
                     
-                    // Start new track
                     val audioTrack = AudioTrack(
                         id = text.id,
                         path = "${text.audio}.mp3",
@@ -180,7 +174,6 @@ class TextDetailsStoreFactory(
         }
 
         private fun release() {
-            // Stop any playing audio and release resources
             playlistManager.stop()
             playlistManager.release()
             dispatch(Message.AudioStopped)
