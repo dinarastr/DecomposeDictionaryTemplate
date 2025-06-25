@@ -3,10 +3,12 @@ package com.dinarastepina.decomposedictionary.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.arkivanov.decompose.retainedComponent
 import com.dinarastepina.decomposedictionary.di.initKoin
 import com.dinarastepina.decomposedictionary.presentation.App
@@ -16,9 +18,9 @@ import org.koin.core.context.GlobalContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
-        
-        // Initialize Koin with Android context if not already initialized
+        enableEdgeToEdge()
         if (GlobalContext.getOrNull() == null) {
             initKoin {
                 androidContext(this@MainActivity)
@@ -26,18 +28,11 @@ class MainActivity : ComponentActivity() {
         }
         
         val rootComponentFactory: RootComponent.Factory by GlobalContext.get().inject()
-        val roo = retainedComponent { context ->
+        val root = retainedComponent { context ->
             rootComponentFactory(context)
         }
         setContent {
-            MyApplicationTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    App(rootComponent = roo)
-                }
-            }
+            App(rootComponent = root)
         }
     }
 }

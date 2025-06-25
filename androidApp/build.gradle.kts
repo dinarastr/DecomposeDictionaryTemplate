@@ -54,6 +54,7 @@ dependencies {
     // Add Koin for Android
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+    implementation(libs.androidx.core.splashscreen)
     
     debugImplementation(libs.compose.ui.tooling)
 }
