@@ -18,11 +18,13 @@ interface TextDetailsStore : Store<TextDetailsStore.Intent, TextDetailsStore.Sta
         data object PlayAudio : Intent()
         data object PauseAudio : Intent()
         data object StopAudio : Intent()
+        data object Release : Intent()
     }
 
     data class State(
         val text: Text,
         val sentencePairs: List<SentencePair> = emptyList(),
+        val currentlyPlayingText: Text? = null,
         val isPlaying: Boolean = false,
         val isLoading: Boolean = false,
         val error: String? = null
@@ -55,7 +57,7 @@ class TextDetailsStoreFactory(
         data class SentencesLoaded(val sentencePairs: List<SentencePair>) : Message()
         data class ErrorOccurred(val error: String) : Message()
         
-        data object AudioStarted : Message()
+        data class AudioStarted(val text: Text) : Message()
         data object AudioPaused : Message()
         data object AudioStopped : Message()
         data object AudioCompleted : Message()
@@ -81,6 +83,7 @@ class TextDetailsStoreFactory(
                 is TextDetailsStore.Intent.PlayAudio -> playAudio()
                 is TextDetailsStore.Intent.PauseAudio -> pauseAudio()
                 is TextDetailsStore.Intent.StopAudio -> stopAudio()
+                is TextDetailsStore.Intent.Release -> release()
             }
         }
 
@@ -96,6 +99,9 @@ class TextDetailsStoreFactory(
                     dispatch(Message.LoadingStarted)
                     val currentState = state()
                     val text = currentState.text
+                    
+                    // Debug: Print the text object to see the audio field
+                    println("Loading text with audio field: '${text.audio}'")
                     
                     val sentencePairs = splitTextIntoSentences(text)
                     dispatch(Message.SentencesLoaded(sentencePairs))
@@ -128,18 +134,26 @@ class TextDetailsStoreFactory(
                     val currentState = state()
                     val text = currentState.text
                     
-                    if (currentState.isPlaying) {
+                    // If the same text is playing, pause it
+                    if (currentState.currentlyPlayingText?.id == text.id && currentState.isPlaying) {
                         pauseAudio()
                         return@launch
                     }
                     
-                    // If already paused, resume playback
-                    if (!currentState.isPlaying) {
+                    // If the same text is paused, resume it
+                    if (currentState.currentlyPlayingText?.id == text.id && !currentState.isPlaying) {
                         playlistManager.playCurrentTrack()
-                        dispatch(Message.AudioStarted)
+                        dispatch(Message.AudioStarted(text))
                         return@launch
                     }
                     
+                    // Check if audio field is empty
+                    if (text.audio.isBlank()) {
+                        dispatch(Message.ErrorOccurred("No audio file available for this text"))
+                        return@launch
+                    }
+                    
+                    // Start new track
                     val audioTrack = AudioTrack(
                         id = text.id,
                         path = "${text.audio}.mp3",
@@ -148,7 +162,7 @@ class TextDetailsStoreFactory(
                     )
                     
                     playlistManager.playTrack(audioTrack)
-                    dispatch(Message.AudioStarted)
+                    dispatch(Message.AudioStarted(text))
                 } catch (e: Exception) {
                     dispatch(Message.ErrorOccurred("Failed to play audio: ${e.message}"))
                 }
@@ -162,6 +176,13 @@ class TextDetailsStoreFactory(
 
         private fun stopAudio() {
             playlistManager.stop()
+            dispatch(Message.AudioStopped)
+        }
+
+        private fun release() {
+            // Stop any playing audio and release resources
+            playlistManager.stop()
+            playlistManager.release()
             dispatch(Message.AudioStopped)
         }
     }
@@ -183,6 +204,7 @@ class TextDetailsStoreFactory(
                     error = message.error
                 )
                 is Message.AudioStarted -> copy(
+                    currentlyPlayingText = message.text,
                     isPlaying = true,
                     error = null
                 )
@@ -190,9 +212,11 @@ class TextDetailsStoreFactory(
                     isPlaying = false
                 )
                 is Message.AudioStopped -> copy(
+                    currentlyPlayingText = null,
                     isPlaying = false
                 )
                 is Message.AudioCompleted -> copy(
+                    currentlyPlayingText = null,
                     isPlaying = false
                 )
             }

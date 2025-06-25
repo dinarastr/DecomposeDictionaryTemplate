@@ -8,6 +8,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.dinarastepina.decomposedictionary.domain.model.Topic
 import com.dinarastepina.decomposedictionary.domain.repository.PhraseBookRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -94,12 +95,10 @@ class TopicsStoreFactory(
                 try {
                     dispatch(Message.LoadingStarted)
                     
-                    // Ensure database operation runs on IO dispatcher
                     val topics = withContext(Dispatchers.IO) {
                         phraseBookRepository.getTopics()
                     }
                     
-                    // Cache the result
                     cachedTopics = topics
                     dispatch(Message.TopicsLoaded(topics))
                 } catch (e: Exception) {

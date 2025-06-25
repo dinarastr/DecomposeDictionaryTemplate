@@ -20,6 +20,7 @@ interface PhrasesStore : Store<PhrasesStore.Intent, PhrasesStore.State, PhrasesS
         data class PlayAudio(val phrase: Phrase) : Intent()
         data object PauseAudio : Intent()
         data object StopAudio : Intent()
+        data object Release : Intent()
     }
 
     data class State(
@@ -84,6 +85,7 @@ class PhrasesStoreFactory(
                 is PhrasesStore.Intent.PlayAudio -> playAudio(intent.phrase)
                 is PhrasesStore.Intent.PauseAudio -> pauseAudio()
                 is PhrasesStore.Intent.StopAudio -> stopAudio()
+                is PhrasesStore.Intent.Release -> release()
             }
         }
 
@@ -142,6 +144,12 @@ class PhrasesStoreFactory(
 
         private fun stopAudio() {
             playlistManager.stop()
+            dispatch(Message.AudioStopped)
+        }
+
+        private fun release() {
+            playlistManager.stop()
+            playlistManager.release()
             dispatch(Message.AudioStopped)
         }
     }

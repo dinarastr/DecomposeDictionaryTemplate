@@ -18,7 +18,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.dinarastepina.decomposedictionary.domain.model.LANGUAGE
 import com.dinarastepina.decomposedictionary.domain.model.Translation
 import com.dinarastepina.decomposedictionary.domain.model.Word
-import com.dinarastepina.decomposedictionary.presentation.components.LanguageSettingsButton
+import com.dinarastepina.decomposedictionary.presentation.ui.kit.LanguageSettingsButton
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
 import com.dinarastepina.decomposedictionary.utils.hideKeyboardOnTap
 import org.jetbrains.compose.resources.painterResource
@@ -130,7 +130,7 @@ private fun DictionaryContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No results found for '$searchQuery'",
+                            text = "По запросу '$searchQuery' слов не найдено",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -146,7 +146,7 @@ private fun DictionaryContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Start typing to search for words...",
+                            text = "Начните вводить текст для поиска",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -167,11 +167,11 @@ private fun SearchBar(
         value = query,
         onValueChange = onQueryChange,
         modifier = modifier,
-        placeholder = { Text("Search words...") },
+        placeholder = { Text("Поиск...") },
         leadingIcon = {
             Icon(
                 painter = painterResource(Res.drawable.ic_search),
-                contentDescription = "Search"
+                contentDescription = "Поиск"
             )
         },
         trailingIcon = {
@@ -179,7 +179,7 @@ private fun SearchBar(
                 IconButton(onClick = onClearClick) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_clear),
-                        contentDescription = "Clear search"
+                        contentDescription = "Очистить поиск"
                     )
                 }
             }
@@ -322,13 +322,13 @@ private fun ErrorSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Error: $error",
+            text = "Ошибка: $error",
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = onRetryClick) {
-            Text("Retry")
+            Text("Ещё раз")
         }
     }
 }

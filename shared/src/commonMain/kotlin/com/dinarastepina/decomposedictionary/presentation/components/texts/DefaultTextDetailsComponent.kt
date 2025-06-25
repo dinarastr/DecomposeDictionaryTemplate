@@ -15,15 +15,19 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.decompose.Cancellation
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.LifecycleOwner
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 
 class DefaultTextDetailsComponent(
     componentContext: ComponentContext,
-    private val textDetailsStoreFactory: TextDetailsStoreFactory,
+    textDetailsStoreFactory: TextDetailsStoreFactory,
     private val text: Text,
     private val onNavigateBack: () -> Unit
 ): TextDetailsComponent, ComponentContext by componentContext {
 
     private val store = textDetailsStoreFactory.create(text)
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override val state: Value<TextDetailsComponent.State> = store.asValue().map { storeState ->
         TextDetailsComponent.State(
@@ -36,7 +40,6 @@ class DefaultTextDetailsComponent(
 
     init {
         // Subscribe to navigation events from the store
-        val scope = CoroutineScope(Dispatchers.Main)
         store.labels
             .onEach { label ->
                 when (label) {
@@ -44,9 +47,20 @@ class DefaultTextDetailsComponent(
                 }
             }
             .launchIn(scope)
+            
+        // Add lifecycle cleanup for audio
+        lifecycle.doOnDestroy {
+            // Stop and release audio when component is destroyed
+            store.accept(TextDetailsStore.Intent.Release)
+            scope.cancel()
+        }
     }
 
     override fun onBackClick() {
+        // Stop audio before navigating back
+        if (state.value.isPlaying) {
+            store.accept(TextDetailsStore.Intent.StopAudio)
+        }
         onNavigateBack()
     }
 
@@ -63,7 +77,6 @@ class DefaultTextDetailsComponent(
     }
 
     private fun <T : Any> Store<*, T, *>.asValue(): Value<T> {
-        val scope = CoroutineScope(Dispatchers.Main)
         val stateFlow = stateFlow(scope)
         return object : Value<T>() {
             override val value: T get() = stateFlow.value
@@ -75,7 +88,6 @@ class DefaultTextDetailsComponent(
 
                 return Cancellation {
                     job.cancel()
-                    scope.cancel()
                 }
             }
         }

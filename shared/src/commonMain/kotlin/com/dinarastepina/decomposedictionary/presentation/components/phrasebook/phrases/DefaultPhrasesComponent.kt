@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.decompose.Cancellation
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 
 class DefaultPhrasesComponent(
     componentContext: ComponentContext,
@@ -25,6 +26,7 @@ class DefaultPhrasesComponent(
 ) : PhrasesComponent, ComponentContext by componentContext {
     
     private val store = phrasesStoreFactory.create(topic)
+    private val scope = CoroutineScope(Dispatchers.Main)
     
     override val state: Value<PhrasesComponent.State> = store.asValue().map { storeState ->
         PhrasesComponent.State(
@@ -39,7 +41,6 @@ class DefaultPhrasesComponent(
     
     init {
         // Subscribe to navigation events from the store
-        val scope = CoroutineScope(Dispatchers.Main)
         store.labels
             .onEach { label ->
                 when (label) {
@@ -47,6 +48,13 @@ class DefaultPhrasesComponent(
                 }
             }
             .launchIn(scope)
+            
+        // Add lifecycle cleanup for audio
+        lifecycle.doOnDestroy {
+            // Stop and release audio when component is destroyed
+            store.accept(PhrasesStore.Intent.Release)
+            scope.cancel()
+        }
     }
     
     override fun onPlayAudio(phrase: Phrase) {
@@ -62,11 +70,14 @@ class DefaultPhrasesComponent(
     }
     
     override fun onBackClick() {
+        // Stop audio before navigating back
+        if (state.value.isPlaying) {
+            store.accept(PhrasesStore.Intent.StopAudio)
+        }
         onNavigateBack()
     }
     
     private fun <T : Any> Store<*, T, *>.asValue(): Value<T> {
-        val scope = CoroutineScope(Dispatchers.Main)
         val stateFlow = stateFlow(scope)
         return object : Value<T>() {
             override val value: T get() = stateFlow.value
@@ -78,7 +89,6 @@ class DefaultPhrasesComponent(
 
                 return Cancellation {
                     job.cancel()
-                    scope.cancel()
                 }
             }
         }

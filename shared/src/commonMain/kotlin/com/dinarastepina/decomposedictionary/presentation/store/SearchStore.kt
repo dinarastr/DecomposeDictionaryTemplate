@@ -35,6 +35,7 @@ interface SearchStore : Store<SearchStore.Intent, SearchStore.State, SearchStore
         data class PlayAudio(val phrase: Phrase) : Intent()
         data object PauseAudio : Intent()
         data object StopAudio : Intent()
+        data object Release : Intent()
     }
 
     data class State(
@@ -130,6 +131,7 @@ class SearchStoreFactory(
                 is SearchStore.Intent.PlayAudio -> playAudio(intent.phrase)
                 is SearchStore.Intent.PauseAudio -> pauseAudio()
                 is SearchStore.Intent.StopAudio -> stopAudio()
+                is SearchStore.Intent.Release -> release()
             }
         }
 
@@ -188,6 +190,13 @@ class SearchStoreFactory(
 
         private fun stopAudio() {
             playlistManager.stop()
+            dispatch(Message.AudioStopped)
+        }
+
+        private fun release() {
+            // Stop any playing audio and release resources
+            playlistManager.stop()
+            playlistManager.release()
             dispatch(Message.AudioStopped)
         }
     }

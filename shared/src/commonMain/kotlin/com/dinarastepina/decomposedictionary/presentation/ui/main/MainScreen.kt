@@ -68,8 +68,8 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_dictionary),
-                contentDescription = "Dictionary") },
-            label = { Text("Dictionary") },
+                contentDescription = "Словарь") },
+            label = { Text("Словарь") },
             selected = activeTab is TabConfig.Dictionary,
             onClick = { onTabSelected(TabConfig.Dictionary) }
         )
@@ -77,8 +77,8 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_list),
-                contentDescription = "Topics") },
-            label = { Text("Topics") },
+                contentDescription = "Фразы") },
+            label = { Text("Фразы") },
             selected = activeTab is TabConfig.Topics,
             onClick = { onTabSelected(TabConfig.Topics.List) }
         )
@@ -86,8 +86,8 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_communication),
-                contentDescription = "Texts") },
-            label = { Text("Texts") },
+                contentDescription = "Тексты") },
+            label = { Text("Тексты") },
             selected = activeTab is TabConfig.Texts,
             onClick = { onTabSelected(TabConfig.Texts.List) }
         )
@@ -95,8 +95,8 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_info),
-                contentDescription = "Info") },
-            label = { Text("Info") },
+                contentDescription = "Инфо") },
+            label = { Text("Инфо") },
             selected = activeTab is TabConfig.Info,
             onClick = { onTabSelected(TabConfig.Info) }
         )
