@@ -31,7 +31,12 @@ import decomposedictionary.shared.generated.resources.ic_dictionary
 import decomposedictionary.shared.generated.resources.ic_list
 import decomposedictionary.shared.generated.resources.ic_communication
 import decomposedictionary.shared.generated.resources.ic_info
+import decomposedictionary.shared.generated.resources.tab_dictionary
+import decomposedictionary.shared.generated.resources.tab_phrases
+import decomposedictionary.shared.generated.resources.tab_texts
+import decomposedictionary.shared.generated.resources.tab_info
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MainScreen(component: MainComponent) {
@@ -68,8 +73,8 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_dictionary),
-                contentDescription = "Словарь") },
-            label = { Text("Словарь") },
+                contentDescription = stringResource(Res.string.tab_dictionary)) },
+            label = { Text(stringResource(Res.string.tab_dictionary)) },
             selected = activeTab is TabConfig.Dictionary,
             onClick = { onTabSelected(TabConfig.Dictionary) }
         )
@@ -77,8 +82,8 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_list),
-                contentDescription = "Фразы") },
-            label = { Text("Фразы") },
+                contentDescription = stringResource(Res.string.tab_phrases)) },
+            label = { Text(stringResource(Res.string.tab_phrases)) },
             selected = activeTab is TabConfig.Topics,
             onClick = { onTabSelected(TabConfig.Topics.List) }
         )
@@ -86,8 +91,8 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_communication),
-                contentDescription = "Тексты") },
-            label = { Text("Тексты") },
+                contentDescription = stringResource(Res.string.tab_texts)) },
+            label = { Text(stringResource(Res.string.tab_texts)) },
             selected = activeTab is TabConfig.Texts,
             onClick = { onTabSelected(TabConfig.Texts.List) }
         )
@@ -95,8 +100,8 @@ private fun BottomNavigationBar(
         NavigationBarItem(
             icon = { Icon(
                 painter = painterResource(Res.drawable.ic_info),
-                contentDescription = "Инфо") },
-            label = { Text("Инфо") },
+                contentDescription = stringResource(Res.string.tab_info)) },
+            label = { Text(stringResource(Res.string.tab_info)) },
             selected = activeTab is TabConfig.Info,
             onClick = { onTabSelected(TabConfig.Info) }
         )

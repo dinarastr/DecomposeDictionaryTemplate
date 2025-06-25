@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,7 +34,12 @@ import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_arrow
 import decomposedictionary.shared.generated.resources.ic_back
 import decomposedictionary.shared.generated.resources.ic_clear
+import decomposedictionary.shared.generated.resources.ic_search
+import decomposedictionary.shared.generated.resources.search_phrase_placeholder
+import decomposedictionary.shared.generated.resources.error_search
+import decomposedictionary.shared.generated.resources.search_phrase
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +55,7 @@ fun SearchScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Найдите фразу по слову",
+                        text = stringResource(Res.string.search_phrase),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
@@ -57,7 +63,7 @@ fun SearchScreen(
                     IconButton(onClick = component::onBackClick) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_back),
-                            contentDescription = "Назад",
+                            contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -76,14 +82,21 @@ fun SearchScreen(
             OutlinedTextField(
                 value = state.query,
                 onValueChange = component::onSearchQuery,
-                label = { Text("Поиск...") },
-                placeholder = { Text("Введите текст на ульчском или русском") },
+                placeholder = {
+                    Text(stringResource(Res.string.search_phrase_placeholder))
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_search),
+                        contentDescription = null
+                    )
+                },
                 trailingIcon = {
                     if (state.query.isNotEmpty()) {
                         IconButton(onClick = component::onClearSearch) {
                             Icon(
                                 painter = painterResource(Res.drawable.ic_clear),
-                                contentDescription = "Очистить поиск"
+                                contentDescription = null
                             )
                         }
                     }
@@ -94,52 +107,45 @@ fun SearchScreen(
                 singleLine = true
             )
 
-            if (state.error != null) {
-                Box(
-                    modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+            when {
+                state.error != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Ошибка поиска",
-                            style = MaterialTheme.typography.headlineSmall,
+                            text = stringResource(Res.string.error_search),
+                            style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.Center
                         )
-                        Text(
-                            text = state.error.toString(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
                     }
                 }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
-                    contentPadding = PaddingValues(vertical = 8.dp)
-                ) {
-                    items(
-                        count = phrases.itemCount,
-                        key = phrases.itemKey { phrase -> phrase.id }
-                    ) { index ->
-                        val phrase = phrases[index]
-                        if (phrase != null) {
-                            val audioState = when {
-                                state.currentlyPlayingPhrase?.id == phrase.id && state.isPlaying -> AudioState.PLAYING
-                                state.currentlyPlayingPhrase?.id == phrase.id && !state.isPlaying -> AudioState.PAUSED
-                                else -> AudioState.STOPPED
-                            }
 
-                            PhraseCard(
-                                isPlaying = audioState,
-                                originalText = phrase.ulchi,
-                                translation = phrase.russian,
-                                onPlayAudio = { component.onPlayAudio(phrase) }
-                            )
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
+                        contentPadding = PaddingValues(vertical = 8.dp)
+                    ) {
+                        items(
+                            count = phrases.itemCount,
+                            key = phrases.itemKey { phrase -> phrase.id }
+                        ) { index ->
+                            val phrase = phrases[index]
+                            if (phrase != null) {
+                                val audioState = when {
+                                    state.currentlyPlayingPhrase?.id == phrase.id && state.isPlaying -> AudioState.PLAYING
+                                    state.currentlyPlayingPhrase?.id == phrase.id && !state.isPlaying -> AudioState.PAUSED
+                                    else -> AudioState.STOPPED
+                                }
+
+                                PhraseCard(
+                                    isPlaying = audioState,
+                                    originalText = phrase.ulchi,
+                                    translation = phrase.russian,
+                                    onPlayAudio = { component.onPlayAudio(phrase) }
+                                )
+                            }
                         }
                     }
                 }

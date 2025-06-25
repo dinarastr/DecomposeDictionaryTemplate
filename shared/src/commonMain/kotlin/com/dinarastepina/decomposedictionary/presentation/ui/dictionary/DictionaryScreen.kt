@@ -7,9 +7,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -22,9 +24,18 @@ import com.dinarastepina.decomposedictionary.presentation.ui.kit.LanguageSetting
 import com.dinarastepina.decomposedictionary.presentation.components.dictionary.DictionaryComponent
 import com.dinarastepina.decomposedictionary.utils.hideKeyboardOnTap
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_search
 import decomposedictionary.shared.generated.resources.ic_clear
+import decomposedictionary.shared.generated.resources.dictionary_search_placeholder
+import decomposedictionary.shared.generated.resources.no_words_found
+import decomposedictionary.shared.generated.resources.error_generic
+import decomposedictionary.shared.generated.resources.word_comment_format
+import decomposedictionary.shared.generated.resources.word_example_format
+import decomposedictionary.shared.generated.resources.search_icon_description
+import decomposedictionary.shared.generated.resources.clear_search_description
+import decomposedictionary.shared.generated.resources.retry_button
 
 @Composable
 fun DictionaryScreen(component: DictionaryComponent) {
@@ -130,8 +141,11 @@ private fun DictionaryContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "По запросу '$searchQuery' слов не найдено",
-                            style = MaterialTheme.typography.bodyLarge
+                            text = stringResource(Res.string.no_words_found, searchQuery),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(32.dp)
                         )
                     }
                 }
@@ -146,8 +160,11 @@ private fun DictionaryContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Начните вводить текст для поиска",
-                            style = MaterialTheme.typography.bodyLarge
+                            text = stringResource(Res.string.dictionary_search_placeholder),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(32.dp)
                         )
                     }
                 }
@@ -167,11 +184,13 @@ private fun SearchBar(
         value = query,
         onValueChange = onQueryChange,
         modifier = modifier,
-        placeholder = { Text("Поиск...") },
+        placeholder = {
+            Text(stringResource(Res.string.dictionary_search_placeholder))
+        },
         leadingIcon = {
             Icon(
                 painter = painterResource(Res.drawable.ic_search),
-                contentDescription = "Поиск"
+                contentDescription = stringResource(Res.string.search_icon_description)
             )
         },
         trailingIcon = {
@@ -179,7 +198,7 @@ private fun SearchBar(
                 IconButton(onClick = onClearClick) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_clear),
-                        contentDescription = "Очистить поиск"
+                        contentDescription = stringResource(Res.string.clear_search_description)
                     )
                 }
             }
@@ -261,10 +280,10 @@ private fun TranslationItem(
 
         translation.comment?.let { comment ->
             Text(
-                text = "($comment)",
+                text = stringResource(Res.string.word_comment_format, comment),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 2.dp)
+                fontStyle = FontStyle.Italic
             )
         }
 
@@ -272,7 +291,7 @@ private fun TranslationItem(
             Spacer(modifier = Modifier.height(4.dp))
             translation.examples.take(2).forEach { example ->
                 Text(
-                    text = "• $example",
+                    text = stringResource(Res.string.word_example_format, example),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 8.dp, top = 1.dp)
@@ -322,13 +341,15 @@ private fun ErrorSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Ошибка: $error",
+            text = stringResource(Res.string.error_generic, error),
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.bodyMedium
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(32.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = onRetryClick) {
-            Text("Ещё раз")
+            Text(stringResource(Res.string.retry_button))
         }
     }
 }

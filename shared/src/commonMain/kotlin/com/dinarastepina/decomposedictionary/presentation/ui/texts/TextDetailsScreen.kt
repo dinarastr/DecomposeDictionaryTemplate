@@ -21,14 +21,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -38,7 +39,11 @@ import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.ic_back
 import decomposedictionary.shared.generated.resources.ic_pause
 import decomposedictionary.shared.generated.resources.ic_play
+import decomposedictionary.shared.generated.resources.text_details_title
+import decomposedictionary.shared.generated.resources.listen_to_text
+import decomposedictionary.shared.generated.resources.error_loading_text
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,64 +53,52 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Текст #${state.text.id}",
-                        color = MaterialTheme.colorScheme.onPrimary
+                        text = stringResource(Res.string.text_details_title, state.text.id),
+                        style = MaterialTheme.typography.titleLarge
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = component::onBackClick) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_back),
-                            contentDescription = "Назад",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            contentDescription = null
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                }
             )
         },
         bottomBar = {
-            BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                tonalElevation = 8.dp
+            Surface(
+                shadowElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surface
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Прослушайте текст",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(1f).padding(start = 16.dp)
+                        text = stringResource(Res.string.listen_to_text),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
                     )
                     
                     FloatingActionButton(
-                        onClick = { 
-                            if (state.isPlaying) {
-                                component.onPauseAudio()
-                            } else {
-                                component.onPlayAudio()
-                            }
-                        },
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.padding(end = 16.dp)
+                        onClick = { component.onPlayAudio() },
+                        containerColor = MaterialTheme.colorScheme.primary
                     ) {
                         Icon(
-                            painter = if (state.isPlaying) {
-                                painterResource(Res.drawable.ic_pause)
-                            } else {
-                                painterResource(Res.drawable.ic_play)
-                            },
-                            contentDescription = if (state.isPlaying) "Пауза" else "Начать"
+                            painter = painterResource(
+                                if (state.isPlaying) Res.drawable.ic_pause 
+                                else Res.drawable.ic_play
+                            ),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }
@@ -121,26 +114,17 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
             when {
                 state.error != null -> {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Ошибка загрузки текста",
-                                style = MaterialTheme.typography.headlineSmall,
-                                color = MaterialTheme.colorScheme.error,
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                text = state.error.toString(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(top = 8.dp)
-                            )
-                        }
+                        Text(
+                            text = stringResource(Res.string.error_loading_text),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
 

@@ -1,4 +1,42 @@
 <resources>
     <string name="about_app">Приложение 'Хэсэди' создано по инициативе РОО 'Ассоциация коренных малочисленных народов Севера Ульчского района' при финансовой поддержке компании 'Эксон Нефтегаз Лимитед'.
         \nВ основу словарей легли "Русско-ульчский словарь" и "Ульчско-русский словарь" Ореста Петровича Суника (1987 г.). \nОзвучка и тексты на ульчском: Светлана Ангина\nДизайн: Оксана Кучекта\nРазработчики: Динара Степина, Василий Харитонов, Андрей Чемышев\nПри активной поддержке 'Страны языков' и межэтнического объединения 'Ильсат'\n\nВопросы и пожелания можно отправить на почту setare497@gmail.com</string>
-    </resources>
+    
+    <!-- Navigation tab labels -->
+    <string name="tab_dictionary">Словарь</string>
+    <string name="tab_phrases">Фразы</string>
+    <string name="tab_texts">Тексты</string>
+    <string name="tab_info">Инфо</string>
+    
+    <!-- Screen titles -->
+    <string name="phrasebook_title">Разговорник</string>
+    <string name="texts_title">Тексты</string>
+    <string name="app_title">Приложение "Хэсэди"</string>
+    <string name="about_app_title">О приложении</string>
+    <string name="text_details_title">Текст #%1$d</string>
+    <string name="text_card_title">Текст #%1$d</string>
+    
+    <!-- Search and placeholders -->
+    <string name="search_phrase_placeholder">Найдите фразу по слову</string>
+    <string name="dictionary_search_placeholder">Поиск</string>
+    <string name="search_phrase">Поиск по фразам</string>
+    <string name="no_words_found">По запросу '%s' слов не найдено</string>
+    <string name="no_texts_found">Текстов не найдено :0(</string>
+    <string name="listen_to_text">Прослушайте текст</string>
+    
+    <!-- Error messages for UI -->
+    <string name="error_loading_phrases">Ошибка при загрузке фраз</string>
+    <string name="error_loading_texts">Ошибка при загрузке текстов</string>
+    <string name="error_loading_text">Ошибка загрузки текста</string>
+    <string name="error_search">Ошибка поиска</string>
+    <string name="error_generic">Ошибка: %s</string>
+    <string name="retry_button">Ещё раз</string>
+    
+    <!-- Content descriptions -->
+    <string name="search_icon_description">Поиск</string>
+    <string name="clear_search_description">Очистить поиск</string>
+    
+    <!-- Word details -->
+    <string name="word_comment_format">(%s)</string>
+    <string name="word_example_format">• %s</string>
+</resources>

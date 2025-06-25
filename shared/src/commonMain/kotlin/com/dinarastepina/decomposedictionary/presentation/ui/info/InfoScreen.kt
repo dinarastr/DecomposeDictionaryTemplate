@@ -24,12 +24,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.dinarastepina.decomposedictionary.presentation.components.info.InfoComponent
 import com.dinarastepina.decomposedictionary.utils.hideKeyboardOnTap
 import decomposedictionary.shared.generated.resources.Res
 import decomposedictionary.shared.generated.resources.about_app
+import decomposedictionary.shared.generated.resources.about_app_title
+import decomposedictionary.shared.generated.resources.app_title
 import decomposedictionary.shared.generated.resources.translate
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -62,17 +66,24 @@ fun InfoScreen(component: InfoComponent) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
+                // Header
+                Text(
+                    text = stringResource(Res.string.about_app_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                
                 // App Logo
                 Card(
-                    modifier = Modifier.size(120.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    ),
+                    modifier = Modifier.size(200.dp),
+                    shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
                     Box(
@@ -81,47 +92,36 @@ fun InfoScreen(component: InfoComponent) {
                     ) {
                         Image(
                             painter = painterResource(Res.drawable.translate),
-                            contentDescription = "App Logo",
+                            contentDescription = null,
                             modifier = Modifier
-                                .size(100.dp)
-                                .clip(RoundedCornerShape(12.dp)),
+                                .fillMaxSize()
+                                .padding(16.dp),
                             contentScale = ContentScale.Fit
                         )
                     }
                 }
-
-                // About App Text
+                
+                // App Title
+                Text(
+                    text = stringResource(Res.string.app_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                
+                // About App Content
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
-                    ) {
-                        Text(
-                            text = "Приложение \"Хэсэди\"",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp)
-                        )
-
-                        Text(
-                            text = stringResource(Res.string.about_app),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            textAlign = TextAlign.Start,
-                            lineHeight = MaterialTheme.typography.bodyMedium.lineHeight * 1.5
-                        )
-                    }
+                    Text(
+                        text = stringResource(Res.string.about_app),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Start,
+                        lineHeight = 20.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
             }
         }

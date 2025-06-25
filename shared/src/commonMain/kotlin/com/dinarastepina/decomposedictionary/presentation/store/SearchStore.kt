@@ -178,7 +178,7 @@ class SearchStoreFactory(
                     playlistManager.playTrack(audioTrack)
                     dispatch(Message.AudioStarted(phrase))
                 } catch (e: Exception) {
-                    dispatch(Message.ErrorOccurred("Failed to play audio: ${e.message}"))
+                    dispatch(Message.ErrorOccurred("error_failed_to_play_audio"))
                 }
             }
         }
