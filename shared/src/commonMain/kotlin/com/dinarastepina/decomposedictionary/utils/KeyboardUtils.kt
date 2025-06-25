@@ -34,4 +34,20 @@ fun Modifier.hideKeyboardOnTap(): Modifier = composed {
         focusManager.clearFocus()
         keyboardController()
     }
+}
+
+/**
+ * Compose modifier that hides the keyboard when tapped, but is gentler and less likely to interfere with TextField focus
+ */
+fun Modifier.hideKeyboardOnTapGentle(): Modifier = composed {
+    val keyboardController = rememberKeyboardController()
+    val interactionSource = remember { MutableInteractionSource() }
+    
+    this.clickable(
+        interactionSource = interactionSource,
+        indication = null // No ripple effect
+    ) {
+        // Only hide keyboard without clearing focus
+        keyboardController()
+    }
 } 

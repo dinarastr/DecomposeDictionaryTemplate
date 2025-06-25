@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -72,7 +73,6 @@ private fun DictionaryContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .hideKeyboardOnTap()
             .background(
                 color = MaterialTheme.colorScheme.primary
             )
@@ -108,13 +108,13 @@ private fun DictionaryContent(
                                 onSearchQueryChange(searchQuery)
                             }
                         },
-                        modifier = Modifier.align(Alignment.CenterHorizontally).hideKeyboardOnTap()
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     return@Column
                 }
 
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(
@@ -152,8 +152,7 @@ private fun DictionaryContent(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(32.dp)
-                                    .hideKeyboardOnTap(),
+                                    .padding(32.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
@@ -195,6 +194,8 @@ private fun SearchBar(
     onClearClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusManager = LocalFocusManager.current
+    
     OutlinedTextField(
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -217,7 +218,13 @@ private fun SearchBar(
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
-                IconButton(onClick = onClearClick) {
+                IconButton(
+                    onClick = {
+                        onClearClick()
+                        // Keep focus after clearing to allow immediate typing
+                        focusManager.clearFocus(force = false)
+                    }
+                ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_clear),
                         contentDescription = stringResource(Res.string.clear_search_description)
@@ -239,7 +246,7 @@ private fun WordItem(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.hideKeyboardOnTap(),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(

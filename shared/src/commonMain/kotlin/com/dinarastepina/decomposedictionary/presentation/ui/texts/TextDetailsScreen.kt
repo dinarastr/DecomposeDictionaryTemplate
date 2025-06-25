@@ -98,7 +98,7 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                                 else Res.drawable.ic_play
                             ),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSecondary
+                            tint = MaterialTheme.colorScheme.onTertiary
                         )
                     }
                 }
