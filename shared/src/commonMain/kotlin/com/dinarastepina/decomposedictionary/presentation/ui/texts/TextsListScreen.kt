@@ -47,7 +47,6 @@ import decomposedictionary.shared.generated.resources.text_card_title
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextsListScreen(
     component: TextsListComponent,
@@ -55,24 +54,12 @@ fun TextsListScreen(
 ) {
     val state by component.state.subscribeAsState()
     
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.primary,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(Res.string.texts_title),
-                    )
-                },
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .hideKeyboardOnTap()
-        ) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primary)
+            .hideKeyboardOnTap()
+    ) {
             when {
                 state.isLoading -> {
                     Box(
@@ -142,7 +129,6 @@ fun TextsListScreen(
             }
         }
     }
-}
 
 @Composable
 private fun TextCard(
