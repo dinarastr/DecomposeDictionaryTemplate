@@ -116,7 +116,7 @@ fun SearchScreen(
                         Text(
                             text = stringResource(Res.string.error_search),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.error,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center
                         )
                     }

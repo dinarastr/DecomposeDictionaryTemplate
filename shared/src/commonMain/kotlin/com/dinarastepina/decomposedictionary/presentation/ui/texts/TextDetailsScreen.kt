@@ -23,7 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -53,21 +54,25 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         text = stringResource(Res.string.text_details_title, state.text.id),
-                        style = MaterialTheme.typography.titleLarge
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = component::onBackClick) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_back),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
         },
         bottomBar = {
@@ -114,15 +119,13 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
             when {
                 state.error != null -> {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = stringResource(Res.string.error_loading_text),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.error,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -134,7 +137,7 @@ fun TextDetailsScreen(component: TextDetailsComponent) {
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }

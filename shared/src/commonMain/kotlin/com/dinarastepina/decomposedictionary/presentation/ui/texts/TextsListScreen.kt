@@ -55,78 +55,92 @@ fun TextsListScreen(
 ) {
     val state by component.state.subscribeAsState()
     
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
-        // Header
-        Text(
-            text = stringResource(Res.string.texts_title),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(16.dp)
-        )
-        
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            
-            state.error != null -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.primary,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(Res.string.texts_title),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .hideKeyboardOnTap()
+        ) {
+            when {
+                state.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = vectorResource(Res.drawable.ic_chat_error),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(48.dp)
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
+                
+                state.error != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                imageVector = vectorResource(Res.drawable.ic_chat_error),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(48.dp)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = stringResource(Res.string.error_loading_texts),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+                
+                state.texts.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            text = stringResource(Res.string.error_loading_texts),
+                            text = stringResource(Res.string.no_texts_found),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.error,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center
                         )
                     }
                 }
-            }
-            
-            state.texts.isEmpty() -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(Res.string.no_texts_found),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-            
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(state.texts) { text ->
-                        TextCard(
-                            text = text,
-                            onClick = { component.onTextClick(text) }
-                        )
+                
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(state.texts) { text ->
+                            TextCard(
+                                text = text,
+                                onClick = { component.onTextClick(text) }
+                            )
+                        }
                     }
                 }
             }
@@ -144,7 +158,11 @@ private fun TextCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

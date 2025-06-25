@@ -36,6 +36,7 @@ import decomposedictionary.shared.generated.resources.word_example_format
 import decomposedictionary.shared.generated.resources.search_icon_description
 import decomposedictionary.shared.generated.resources.clear_search_description
 import decomposedictionary.shared.generated.resources.retry_button
+import decomposedictionary.shared.generated.resources.tab_dictionary
 
 @Composable
 fun DictionaryScreen(component: DictionaryComponent) {
@@ -54,6 +55,7 @@ fun DictionaryScreen(component: DictionaryComponent) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DictionaryContent(
     currentLanguage: LANGUAGE,
@@ -65,107 +67,133 @@ private fun DictionaryContent(
     words: LazyPagingItems<Word>,
     error: String?
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        SearchBar(
-            query = searchQuery,
-            onQueryChange = onSearchQueryChange,
-            onClearClick = onClearSearch,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        LanguageSettingsButton(
-            languageOne = currentLanguage,
-            languageTwo = targetLanguage,
-            onClick = onLanguageSelected
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (error != null) {
-            ErrorSection(
-                error = error,
-                onRetryClick = {
-                    if (searchQuery.isNotEmpty()) {
-                        onSearchQueryChange(searchQuery)
-                    }
-                },
-                modifier = Modifier.align(Alignment.CenterHorizontally).hideKeyboardOnTap()
-            )
-            return@Column
-        }
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                count = words.itemCount,
-                key = words.itemKey { it.id }
-            ) { index ->
-                val word = words[index]
-                if (word != null) {
-                    WordItem(
-                        word = word,
-                        modifier = Modifier.fillMaxWidth()
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.primary,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(Res.string.tab_dictionary),
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
-                } else {
-                    WordItemPlaceholder()
-                }
-            }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .hideKeyboardOnTap()
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                SearchBar(
+                    query = searchQuery,
+                    onQueryChange = onSearchQueryChange,
+                    onClearClick = onClearSearch,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            if (words.loadState.append.endOfPaginationReached.not()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+                LanguageSettingsButton(
+                    languageOne = currentLanguage,
+                    languageTwo = targetLanguage,
+                    onClick = onLanguageSelected
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (error != null) {
+                    ErrorSection(
+                        error = error,
+                        onRetryClick = {
+                            if (searchQuery.isNotEmpty()) {
+                                onSearchQueryChange(searchQuery)
+                            }
+                        },
+                        modifier = Modifier.align(Alignment.CenterHorizontally).hideKeyboardOnTap()
+                    )
+                    return@Column
+                }
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().hideKeyboardOnTap(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(
+                        count = words.itemCount,
+                        key = words.itemKey { it.id }
+                    ) { index ->
+                        val word = words[index]
+                        if (word != null) {
+                            WordItem(
+                                word = word,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        } else {
+                            WordItemPlaceholder()
+                        }
                     }
-                }
-            }
 
-            if (words.itemCount == 0 && searchQuery.isNotEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp)
-                            .hideKeyboardOnTap(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.no_words_found, searchQuery),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(32.dp)
-                        )
+                    if (words.loadState.append.endOfPaginationReached.not()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                        }
                     }
-                }
-            }
 
-            if (words.itemCount == 0 && searchQuery.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.dictionary_search_placeholder),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(32.dp)
-                        )
+                    if (words.itemCount == 0 && searchQuery.isNotEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp)
+                                    .hideKeyboardOnTap(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stringResource(Res.string.no_words_found, searchQuery),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(32.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    if (words.itemCount == 0 && searchQuery.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stringResource(Res.string.dictionary_search_placeholder),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(32.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -218,7 +246,11 @@ private fun WordItem(
 ) {
     Card(
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -343,7 +375,7 @@ private fun ErrorSection(
         Text(
             text = stringResource(Res.string.error_generic, error),
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.error,
+            color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(32.dp)
         )

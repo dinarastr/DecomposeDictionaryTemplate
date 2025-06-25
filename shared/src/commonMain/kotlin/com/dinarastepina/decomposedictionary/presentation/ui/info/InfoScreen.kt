@@ -74,7 +74,11 @@ fun InfoScreen(component: InfoComponent) {
                 Card(
                     modifier = Modifier.size(200.dp),
                     shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -92,7 +96,11 @@ fun InfoScreen(component: InfoComponent) {
                 }
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
                 ) {
                     Text(
                         text = stringResource(Res.string.about_app),

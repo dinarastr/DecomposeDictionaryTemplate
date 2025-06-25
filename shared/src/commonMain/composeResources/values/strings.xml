@@ -20,7 +20,7 @@
     <string name="search_phrase_placeholder">Найдите фразу по слову</string>
     <string name="dictionary_search_placeholder">Поиск</string>
     <string name="search_phrase">Поиск по фразам</string>
-    <string name="no_words_found">По запросу '%s' слов не найдено</string>
+    <string name="no_words_found">По запросу '%1$s' слов не найдено</string>
     <string name="no_texts_found">Текстов не найдено :0(</string>
     <string name="listen_to_text">Прослушайте текст</string>
     
