@@ -8,9 +8,21 @@ import com.dinarastepina.decomposedictionary.domain.model.Translation
 import com.dinarastepina.decomposedictionary.domain.model.Word
 
 fun RussianWordEntity.toDomain(): Word {
+    // Extract grammar information from all translations
+    val grammarInfo = translations.mapNotNull { translation ->
+        translation.grammar?.let { grammar ->
+            val acronymText = grammar.acronym?.joinToString(", ") { acronym ->
+                acronym.text
+            }
+            val grammarParts = listOfNotNull(acronymText, grammar.text.takeIf { it.isNotBlank() })
+            if (grammarParts.isNotEmpty()) grammarParts.joinToString(" ") else null
+        }
+    }.firstOrNull()
+
     return Word(
         id = id.toString(),
         text = word,
+        grammar = grammarInfo,
         translations = translations.mapIndexed { index, translation ->
             translation.toDomain(index + 1, translations.size > 1)
         }

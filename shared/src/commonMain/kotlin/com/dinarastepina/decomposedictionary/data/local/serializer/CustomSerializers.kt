@@ -302,39 +302,46 @@ object GrammarSerializer : KSerializer<com.dinarastepina.decomposedictionary.dat
         
         return when (jsonElement) {
             is JsonObject -> {
-                try {
-                    JsonConfig.json.decodeFromJsonElement(com.dinarastepina.decomposedictionary.data.local.entity.Grammar.serializer(), jsonElement)
-                } catch (e: Exception) {
-                    println("Error parsing Grammar object, attempting manual parsing: ${e.message}")
-                    println("JSON input: $jsonElement")
-                    
-                    // Handle case where 'acronym' field is a single object instead of array
-                    val acronym = jsonElement["acronym"]?.let { acronymElement ->
-                        when (acronymElement) {
-                            is JsonArray -> {
-                                acronymElement.mapNotNull { element ->
-                                    try {
-                                        JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), element)
-                                    } catch (ex: Exception) {
-                                        println("Error parsing acronym in array: ${ex.message}")
-                                        null
-                                    }
-                                }
-                            }
-                            is JsonObject -> {
+                // Always use manual parsing to avoid conflicts with AcronymListSerializer
+                println("Parsing Grammar object manually")
+                println("JSON input: $jsonElement")
+                
+                // Handle case where 'acronym' field is a single object instead of array
+                val acronym = jsonElement["acronym"]?.let { acronymElement ->
+                    when (acronymElement) {
+                        is JsonArray -> {
+                            println("Found acronym array with ${acronymElement.size} elements")
+                            acronymElement.mapNotNull { element ->
                                 try {
-                                    listOf(JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), acronymElement))
+                                    JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), element)
                                 } catch (ex: Exception) {
-                                    println("Error parsing single acronym object: ${ex.message}")
-                                    emptyList()
+                                    println("Error parsing acronym in array: ${ex.message}")
+                                    null
                                 }
                             }
-                            else -> null
+                        }
+                        is JsonObject -> {
+                            println("Found single acronym object, converting to list")
+                            try {
+                                listOf(JsonConfig.json.decodeFromJsonElement(Acronym.serializer(), acronymElement))
+                            } catch (ex: Exception) {
+                                println("Error parsing single acronym object: ${ex.message}")
+                                println("Acronym JSON: $acronymElement")
+                                // Manually extract title and text
+                                val title = acronymElement["title"]?.jsonPrimitive?.content ?: ""
+                                val text = acronymElement["text"]?.jsonPrimitive?.content ?: ""
+                                listOf(Acronym(title = title, text = text))
+                            }
+                        }
+                        else -> {
+                            println("Acronym field is neither array nor object: ${acronymElement::class.simpleName}")
+                            null
                         }
                     }
-                    val text = jsonElement["text"]?.jsonPrimitive?.content ?: ""
-                    com.dinarastepina.decomposedictionary.data.local.entity.Grammar(acronym = acronym, text = text)
                 }
+                val text = jsonElement["text"]?.jsonPrimitive?.content ?: ""
+                println("Successfully parsed Grammar: acronym=${acronym?.size ?: 0} items, text='$text'")
+                com.dinarastepina.decomposedictionary.data.local.entity.Grammar(acronym = acronym, text = text)
             }
             else -> throw IllegalArgumentException("Expected JsonObject for Grammar, got ${jsonElement::class.simpleName}")
         }
