@@ -38,7 +38,7 @@ jobs:
           run: chmod +x gradlew
 
         - name: Compile shared module
-          run: ./gradlew :shared:compileKotlinAndroid :shared:compileKotlinIosArm64 :shared:compileKotlinIosX64 :shared:compileKotlinIosSimulatorArm64
+          run: ./gradlew :shared:compileDebugKotlinAndroid :shared:compileKotlinIosArm64 :shared:compileKotlinIosX64 :shared:compileKotlinIosSimulatorArm64
 
         - name: Compile Android app
           run: ./gradlew :androidApp:compileDebugKotlin
@@ -50,4 +50,4 @@ jobs:
           uses: actions/upload-artifact@v4
           with:
             name: debug-apk
-            path: androidApp/build/outputs/apk/debug/*.apk 
+            path: androidApp/build/outputs/apk/debug/*.apk
