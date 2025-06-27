@@ -34,12 +34,26 @@ jobs:
         - name: Grant execute permission for gradlew
           run: chmod +x gradlew
 
-        - name: Bump version
+        - name: Read version from properties
+          id: version
+          run: |
+            # Read version from version.properties
+            VERSION_CODE=$(grep "VERSION_CODE=" version.properties | cut -d'=' -f2)
+            VERSION_NAME=$(grep "VERSION_NAME=" version.properties | cut -d'=' -f2)
+            
+            echo "Using Version Code: $VERSION_CODE"
+            echo "Using Version Name: $VERSION_NAME"
+            
+            # Set outputs for use in other steps
+            echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+            echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+
+        - name: Bump version in build.gradle.kts
           uses: chkfung/android-version-actions@v1.1
           with:
             gradlePath: androidApp/build.gradle.kts
-            versionCode: ${{ github.run_number }}
-            versionName: ${{ format('2.1.{0}', github.run_number ) }}
+            versionCode: ${{ steps.version.outputs.version_code }}
+            versionName: ${{ steps.version.outputs.version_name }}
 
         - name: Decode upload keystore
           run: |
