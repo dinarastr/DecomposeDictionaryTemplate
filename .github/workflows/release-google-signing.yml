@@ -41,22 +41,16 @@ jobs:
             versionCode: ${{ github.run_number }}
             versionName: ${{ format('2.1.{0}', github.run_number ) }}
 
-        # Option 1: Use debug signing (Google will re-sign)
-        - name: Build release bundle (debug signed)
-          run: ./gradlew :androidApp:bundleRelease
-          # No signing configuration needed - Google will handle it
+        - name: Decode upload keystore
+          run: |
+            echo "${{ secrets.GP_SIGNING_KEY }}" | base64 -d > androidApp/ulchidic.jks
 
-        # Option 2: Use upload key (if you have one configured)
-        # - name: Decode upload key
-        #   run: |
-        #     echo "${{ secrets.UPLOAD_KEY_BASE64 }}" | base64 -d > androidApp/upload-key.jks
-        #
-        # - name: Build release bundle (upload key signed)
-        #   run: ./gradlew :androidApp:bundleRelease
-        #   env:
-        #     UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
-        #     UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
-        #     UPLOAD_ALIAS_PASSWORD: ${{ secrets.UPLOAD_ALIAS_PASSWORD }}
+        - name: Build release bundle (signed for upload)
+          run: ./gradlew :androidApp:bundleRelease
+          env:
+            KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+            KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+            KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
         - name: Upload to Google Play Store
           uses: r0adkll/upload-google-play@v1.1.1
@@ -64,7 +58,7 @@ jobs:
             serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_GP }}
             packageName: ru.dinarastepina.ulchidictionary
             releaseFiles: androidApp/build/outputs/bundle/release/androidApp-release.aab
-            track: internal
+            track: production
             status: completed
 
         - name: Upload release bundle
