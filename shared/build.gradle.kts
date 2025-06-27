@@ -29,6 +29,13 @@ kotlin {
         it.binaries.framework {
             baseName = "shared"
             isStatic = true
+            
+            // Optimize for memory usage and suppress warnings
+            freeCompilerArgs += listOf(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlin.ExperimentalMultiplatform",
+                "-Xexpect-actual-classes"
+            )
         }
     }
 
@@ -104,6 +111,16 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+// Kotlin/Native memory optimizations
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xexpect-actual-classes"
+        )
     }
 }
 
