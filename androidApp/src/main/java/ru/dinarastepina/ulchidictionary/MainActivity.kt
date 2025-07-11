@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.arkivanov.decompose.retainedComponent
 import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext
 import ru.dinarastepina.ulchidictionary.di.initKoin
 import ru.dinarastepina.ulchidictionary.presentation.App
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         if (GlobalContext.getOrNull() == null) {
             initKoin {
+                androidLogger()
                 androidContext(this@MainActivity)
             }
         }

@@ -33,7 +33,6 @@ decompose-extensions-android = { module = "com.arkivanov.decompose:extensions-an
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin" }
-koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel", version.ref = "koin" }
 
 # Room dependencies
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
@@ -54,7 +53,6 @@ mvikotlin-extensions-coroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-
 
 # Essenty dependencies
 essenty-lifecycle = { module = "com.arkivanov.essenty:lifecycle", version.ref = "essenty" }
-essenty-lifecycle-coroutines = { module = "com.arkivanov.essenty:lifecycle-coroutines", version.ref = "essenty" }
 
 # Kotlinx Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }

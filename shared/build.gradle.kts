@@ -55,12 +55,10 @@ kotlin {
             implementation(libs.mvikotlin.logging)
             implementation(libs.mvikotlin.timetravel)
             implementation(libs.mvikotlin.extensions.coroutines)
-            implementation(libs.essenty.lifecycle.coroutines)
+            implementation(libs.essenty.lifecycle)
 
             // Koin dependencies
             implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
 
             // Room database
             implementation(libs.room.runtime)
@@ -80,10 +78,6 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.room.runtime)
             implementation(libs.room.ktx)
-        }
-        
-        iosMain.dependencies {
-            // iOS specific dependencies if needed
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
