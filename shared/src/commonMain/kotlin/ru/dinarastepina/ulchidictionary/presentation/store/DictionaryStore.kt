@@ -122,7 +122,7 @@ class DictionaryStoreFactory(
 
     private sealed class Action {
         data object Initialize : Action()
-        
+
         data object SubscribeToLanguageUpdates : Action()
     }
 
@@ -173,7 +173,7 @@ class DictionaryStoreFactory(
 
         private fun updateSelectedLanguage(language: LANGUAGE) {
             dispatch(Message.SelectedLanguageUpdated(language))
-            
+
             scope.launch {
                 try {
                     dataStoreRepository.setLastSelectedLanguage(language.value)

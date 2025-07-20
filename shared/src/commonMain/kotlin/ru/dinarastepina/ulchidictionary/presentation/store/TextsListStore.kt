@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 interface TextsListStore : Store<TextsListStore.Intent, TextsListStore.State, TextsListStore.Label> {
 
     sealed class Intent {
-        data object LoadTexts : Intent()
         data class SelectText(val text: Text) : Intent()
     }
 
@@ -32,7 +31,11 @@ class TextsListStoreFactory(
     private val textsRepository: TextsRepository
 ) {
     fun create(): TextsListStore =
-        object : TextsListStore, Store<TextsListStore.Intent, TextsListStore.State, TextsListStore.Label> by storeFactory.create(
+        object : TextsListStore,
+            Store<TextsListStore.Intent,
+                    TextsListStore.State,
+                    TextsListStore.Label>
+            by storeFactory.create(
             name = "TextsListStore",
             initialState = TextsListStore.State(),
             bootstrapper = BootstrapperImpl(),
@@ -60,7 +63,6 @@ class TextsListStoreFactory(
         
         override fun executeIntent(intent: TextsListStore.Intent) {
             when (intent) {
-                is TextsListStore.Intent.LoadTexts -> loadTexts()
                 is TextsListStore.Intent.SelectText -> selectText(intent.text)
             }
         }
