@@ -2,9 +2,9 @@ package ru.dinarastepina.ulchidictionary.presentation.store
 
 
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import ru.dinarastepina.ulchidictionary.audio.AudioTrack
 import ru.dinarastepina.ulchidictionary.audio.PlaylistManager
@@ -46,7 +46,7 @@ class PhrasesStoreFactory(
         object : PhrasesStore, Store<PhrasesStore.Intent, PhrasesStore.State, PhrasesStore.Label> by storeFactory.create(
             name = "PhrasesStore",
             initialState = PhrasesStore.State(topic = topic),
-            bootstrapper = BootstrapperImpl(),
+            bootstrapper = SimpleBootstrapper(Action.LoadPhrases),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         ) {}
@@ -63,12 +63,6 @@ class PhrasesStoreFactory(
         data object AudioPaused : Message()
         data object AudioStopped : Message()
         data object AudioCompleted : Message()
-    }
-
-    private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
-        override fun invoke() {
-            dispatch(Action.LoadPhrases)
-        }
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<PhrasesStore.Intent, Action, PhrasesStore.State, Message, PhrasesStore.Label>() {

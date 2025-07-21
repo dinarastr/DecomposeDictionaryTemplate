@@ -4,9 +4,9 @@ import app.cash.paging.PagingConfig
 import app.cash.paging.PagingData
 import app.cash.paging.Pager
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import ru.dinarastepina.ulchidictionary.data.paging.RussianWordPagingSource
@@ -66,7 +66,10 @@ class DictionaryStoreFactory(
         val store = storeFactory.create(
             name = "DictionaryStore",
             initialState = DictionaryStore.State(),
-            bootstrapper = BootstrapperImpl(),
+            bootstrapper = SimpleBootstrapper(
+                Action.Initialize,
+                Action.SubscribeToLanguageUpdates
+            ),
             executorFactory = { ExecutorImpl() },
             reducer = ReducerImpl
         )
@@ -132,13 +135,6 @@ class DictionaryStoreFactory(
         data object SearchCleared : Message()
         data object Initialized : Message()
         data class SelectedLanguageUpdated(val language: LANGUAGE) : Message()
-    }
-
-    private inner class BootstrapperImpl : CoroutineBootstrapper<Action>() {
-        override fun invoke() {
-            dispatch(Action.Initialize)
-            dispatch(Action.SubscribeToLanguageUpdates)
-        }
     }
 
     private inner class ExecutorImpl :

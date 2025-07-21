@@ -4,9 +4,9 @@ import app.cash.paging.PagingConfig
 import app.cash.paging.Pager
 import app.cash.paging.PagingData
 import com.arkivanov.mvikotlin.core.store.Reducer
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import ru.dinarastepina.ulchidictionary.audio.AudioTrack
@@ -62,7 +62,7 @@ class SearchStoreFactory(
         val store = storeFactory.create(
             name = "SearchStore",
             initialState = SearchStore.State(),
-            bootstrapper = BootstrapperImpl(),
+            bootstrapper = SimpleBootstrapper(Action.Initialize),
             executorFactory = ::ExecutorImpl,
             reducer = ReducerImpl
         )
@@ -108,12 +108,6 @@ class SearchStoreFactory(
         data object AudioPaused : Message()
         data object AudioStopped : Message()
         data object AudioCompleted : Message()
-    }
-
-    private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
-        override fun invoke() {
-            dispatch(Action.Initialize)
-        }
     }
 
     private inner class ExecutorImpl : CoroutineExecutor<SearchStore.Intent, Action, SearchStore.State, Message, SearchStore.Label>() {
